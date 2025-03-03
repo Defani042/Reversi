@@ -19,36 +19,51 @@ S : rien
 void affiche_piece(int h, char x, char y, int joueur){
     int i,j;
 
-    i = x-'0';      /*Converti la lettre pour l'affichage*/
-    j = y-'A'+1;    /*Converti la lettre pour l'affichage*/
+    if ((x >= 'a' || x <= 'h') && (y >= '0' || y <= '8')){ /*si les coordonnées sont coorectes*/
 
-    if(joueur==0){ /*Si le joueur est blanc*/
-        MLV_draw_filled_circle(j*h/9+h/18,i*h/9+h/18,h/24,MLV_COLOR_WHITE);
+        i = x-'A'+1;      /*Converti la lettre pour l'affichage*/
+        j = y-'0';        /*Converti la lettre pour l'affichage*/
+
+        if(joueur==0){ /*Si le joueur est blanc*/
+            MLV_draw_filled_circle(i*h/9+h/18,j*h/9+h/18,h/24,MLV_COLOR_WHITE);
+        }
+        /*sinon*/
+        else MLV_draw_filled_circle(i*h/9+h/18,j*h/9+h/18,h/24,MLV_rgba(50,50,50,255));
     }
-    /*sinon*/
-    else MLV_draw_filled_circle(j*h/9+h/18,i*h/9+h/18,h/24,MLV_rgba(50,50,50,255));
+    /*si les coordonnées sont incorrectes, n'affiche rien*/
 }
 
 /*
-R : Converti les coordonnées en lettres ou chiffre et affiche la piece
-E : coordonnées x et y
-S : rien
+R : Converti les coordonnées en lettres
+E : coordonnées y
+S : le caractère de la ligne
 */
 
-void conversion(int h, int x, int y,int joueur){
-    int i,j;
-    char l='z',c='z'; /*l = ligne , c=colonne*/
+char conversion_ligne(int h, int x){
+    int j;
+    char l='z'; /*l = ligne*/
+    
+    for(j=1;j<9;j++){   /*Converti les coordonnées y de la souris en lettre*/
+        if(x>h/9*j) l=j+'A'-1;
+    }
+    return l;
+}
+
+/*
+R : Converti les coordonnées en lettres
+E : coordonnées x
+S : le caractère de la colonne
+*/
+
+char conversion_colonne(int h, int y){
+    int i;
+    char c='z'; /*l = colonne*/
     
     for(i=1;i<9;i++){ /*Converti les coordonnées x de la souris en chiffre*/
-        if(x>h/9*i) c=i+'0';
+        if(y>h/9*i) c=i+'0';
     }
-    for(j=1;j<9;j++){   /*Converti les coordonnées y de la souris en lettre*/
-        if(y>h/9*j) l=j+'A'-1;
-    }
-    printf("%d,%d,%c,%c\n",x,y,c,l); /*affichage debug*/
 
-    /*si les coordonnées sont correctes affiche les pieces sur le plateau*/
-    if ((l >= 'a' || l <= 'h') && (c >= '0' || l <= '8')) affiche_piece(h,(char)c,(char)l,joueur);
+    return c;
 }
 
 /*
@@ -173,16 +188,16 @@ void jeu(){
     h=setMainWindow();
 
     /*Affichage 4 piece de base*/
-    affiche_piece(h,'4','D',0); /* 0 pour le joueur blanc*/
-    affiche_piece(h,'5','E',0);
-    affiche_piece(h,'4','E',1); /* 1 ( ou autre ) pour le joueur noir*/
-    affiche_piece(h,'5','D',1);
+    affiche_piece(h,'D','4',0); /* 0 pour le joueur blanc*/
+    affiche_piece(h,'E','5',0);
+    affiche_piece(h,'E','4',1); /* 1 ( ou autre ) pour le joueur noir*/
+    affiche_piece(h,'D','5',1);
 
     while(i){ /*boucle de jeu*/
         MLV_actualise_window();     /* actualise la fenêtre */
         MLV_wait_mouse(&x,&y);      /* attends un click et met les coordonnées dans x et y */
         if(x<h/9 && y<h/9) i=0;     /* quitte si on clique au bon endroit */
-        conversion(h,y,x,1);        /* affiche un cercle si on clique au bon endroit*/
+        affiche_piece(h,conversion_ligne(h,x),conversion_colonne(h,y),0);
     }
 }
 

@@ -8,7 +8,9 @@
 
 void affiche_piece(int h,char x,char y,int joueur);
 
-void conversion(int h, int x, int y,int j);
+char conversion_ligne(int h, int x);
+
+char conversion_colonne(int h, int y);
 
 void quitter(int h);
 
