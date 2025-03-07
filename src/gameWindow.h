@@ -12,8 +12,6 @@ char conversion_ligne(int h, int x);
 
 char conversion_colonne(int h, int y);
 
-void quitter(int h);
-
 void coordonnees(int h);
 
 void grille(int h);

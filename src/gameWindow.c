@@ -6,6 +6,8 @@
 #include <MLV/MLV_all.h>
 
 #define FONT_PATH "fich/04B_30__.TTF"
+#define PATH_IMAGE "fich/fond.jpg"
+#define PATH_FOND_VERT "fich/vert.jpg"
 #define N 5
 
 
@@ -28,7 +30,7 @@ void affiche_piece(int h, char x, char y, int joueur){
             MLV_draw_filled_circle(i*h/9+h/18,j*h/9+h/18,h/24,MLV_COLOR_WHITE);
         }
         /*sinon*/
-        else MLV_draw_filled_circle(i*h/9+h/18,j*h/9+h/18,h/24,MLV_rgba(50,50,50,255));
+        else MLV_draw_filled_circle(i*h/9+h/18,j*h/9+h/18,h/24,MLV_rgba(0,0,0,255));
     }
     /*si les coordonnées sont incorrectes, n'affiche rien*/
 }
@@ -67,35 +69,6 @@ char conversion_colonne(int h, int y){
 }
 
 /*
-R : Permet d'afficher le boutton quitter
-E : hauteur de la fenêtre
-S : Rien
-*/
-
-void quitter(int h){
-    int p;
-    MLV_Font* font=NULL;
-
-    p=50; /*taille police*/
-    font = MLV_load_font(FONT_PATH , p ); /*pointeur vers le fichier*/
-
-    if(font==NULL){
-        printf("Erreur : impossible de trouver le font, arrêt du programme");
-        exit(EXIT_FAILURE); /*cas d'arrêt si on ne trouve pas le fichier font*/
-    }
-
-    /*affiche le rectangle rouge d'affichage*/
-    MLV_draw_filled_rectangle(0,0,h/9,h/9,MLV_rgba(255,0,0,255));
-
-    /*affiche le 'x' sur le fond rouge*/
-    MLV_draw_text_with_font(
-        (h/35), (h/50), /*<--- coordonnées du x*/
-        "x",
-        font, MLV_COLOR_WHITE 
-    );
-}
-
-/*
 R : Permet d'afficher les coordonnées
 E : hauteur de la fenêtre
 S : Rien
@@ -119,18 +92,18 @@ void coordonnees(int h){
     for(i=h/9;i<h;i+=h/9){  /* boucle visant a afficher aux bon endrois les caractère du tableau */
         sprintf(aff,"%c",lettre[j++]); /* on transforme le caractère en string */
         MLV_draw_text_with_font(
-            i, 0,
+            i + h/36, h/36,
             aff,                        /* on affiche le caractère */
-            font, MLV_COLOR_WHITE
+            font, MLV_rgba(225,192,152,255)
         );
     }
     j=0;
     for(i=h/9;i<h;i+=h/9){  /* boucle visant a afficher aux bon endrois les caractère du tableau */
         sprintf(aff,"%c",chiffre[j++]); /*on transforme le caractère en string*/
         MLV_draw_text_with_font(
-            0, i,
+            h/36, i+h/36,
             aff,                        /* on affiche le caractère */
-            font, MLV_COLOR_WHITE
+            font, MLV_rgba(225,192,152,255)
         );
     }
 }
@@ -145,16 +118,32 @@ void grille(int h){
     int i,j;
     for(i=0;i<h;i+=h/9){
         for(j=0;j<h;j+=h/9){
-            MLV_draw_line(i,j,i,h,MLV_rgba(255,255,255,255)); /* affiche les lignes horizontales */
-            MLV_draw_line(i,j,h,j,MLV_rgba(255,255,255,255)); /* affiche les lignes verticales */
+            MLV_draw_line(i,j,i,h,MLV_rgba(0,100,0,255)); /* affiche les lignes horizontales */
+            MLV_draw_line(i,j,h,j,MLV_rgba(0,100,0,255)); /* affiche les lignes verticales */
         
         }
     }
-    MLV_draw_line(0,h-1,h-1,h-1,MLV_rgba(255,255,255,255));  /*Affiche les lignes aux bords*/
-    MLV_draw_line(h-1,0,h-1,h-1,MLV_rgba(255,255,255,255));  /*droit et bas de l'ecran*/
+    MLV_draw_line(0,h-1,h-1,h-1,MLV_rgba(0,100,0,255));  /*Affiche les lignes aux bords*/
+    MLV_draw_line(h-1,0,h-1,h-1,MLV_rgba(0,100,0,255)); /*droit et bas de l'ecran*/
+}
 
-    MLV_draw_line(h/9,h/9,h/9,h,MLV_rgba(255,255,0,255)); /*affiches les lignes colorées*/
-    MLV_draw_line(h/9,h/9,h,h/9,MLV_rgba(255,255,0,255));
+/*
+R : Permet d'afficher le fond d'écran
+E : Hautur ecrran
+S : Rien
+*/
+
+void background(int h){
+    MLV_Image* background;
+    background = MLV_load_image(PATH_IMAGE);
+
+    MLV_resize_image(background,h,h);
+    MLV_draw_image(background,0,0);
+
+    background = MLV_load_image(PATH_FOND_VERT);
+
+    MLV_resize_image(background,h-h/9,h-h/9);
+    MLV_draw_image(background,h/9,h/9);
 }
 
 /*
@@ -169,7 +158,7 @@ int setMainWindow(){
     height = MLV_get_desktop_height()-75; /* initialise la taille de l'écran*/
 
     MLV_create_window("Réversi","Réversi",height,height); /* créer la fenêtre*/
-    quitter(height);    /* créer le boutton quitter*/
+    background(height); /*met le fond d'écran*/
     grille(height);     /* créer la grille*/
     coordonnees(height);    /* affiches les coordonnées */
     MLV_actualise_window(); /* actualise la fenêtre */
