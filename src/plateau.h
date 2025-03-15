@@ -11,7 +11,7 @@
 
 /*TAD plateau*/
 typedef struct{
-  int**mat; /*case vide:0 case noir:1 case blanche:2*/
+  int**mat; /*case vide:0 case noir:1 case blanche:2 case jouable:4*/
   int l,c;
 }s_plateau;
 typedef s_plateau* plat;

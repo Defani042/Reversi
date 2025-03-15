@@ -88,6 +88,10 @@ S: vide
 void afficher_plateau(plat p){
   int i,j;
   /*bordure supérieur du plateau*/
+  printf("Case vide = '.'\n");
+  printf("Case Noir = 'N'\n");
+  printf("Case Blanche = 'B'\n");
+  printf("Case jouable = '+'\n");
   printf("    ");
   for(i=0;i<p->c;i++){
     printf("%d ",i+1);
@@ -106,6 +110,9 @@ void afficher_plateau(plat p){
 	break;
       case 2:/*cas ou la case est Blanche*/
 	printf(" B");
+	break;
+      case 3:
+	printf(" +");
 	break;
       default:/*cas d'erreur*/
 	printf(" E");
@@ -189,7 +196,6 @@ void saisir_coup(plat p) {
         if (scanf("%d %d", &x, &y) != 2) {
             printf("Entrée invalide. Veuillez entrer deux nombres entiers.\n");
             vider_buffer();
-            continue;
         }
 
         /*Vérification et placement du coup*/
@@ -204,7 +210,11 @@ void saisir_coup(plat p) {
     printf("Fin du tour\n");
 }
 
-
+/*
+R: gestion de la boucle de jeu sur le terminale
+E: vide
+S: vide
+*/
 
 void boucle_jeu_terminal(){
   /*création et allocution du plateau*/
