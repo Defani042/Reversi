@@ -1,7 +1,19 @@
-#ifndef _PLATEAU_C_
+ #ifndef _PLATEAU_C_
 #define _PLATEAU_C_
 
 #include "plateau.h"
+
+/*
+R: vider le buffer sur la ligne de commande
+E: vide
+S: vide 
+*/
+
+void vider_buffer() {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);  /* Lire jusqu'à la fin de ligne ou EOF*/
+}
+
 
 /*
 R: allouer un TAD plat dans la mémoire
@@ -122,6 +134,91 @@ void afficher_mat(plat p){
     }
     printf("\n");
   }
+}
+
+/*
+R: determine si le plateau est remplie ou non
+E: un TAD plat
+S: 1 entier 1 si le plateau est rempli 0 sinon
+*/
+
+int plateau_remplie(plat p){
+  int i,j;
+  /*on parcourps le plateau*/
+   for(i=0;i<p->c;i++){
+    for(j=0;j<p->l;j++){
+      if(p->mat[i][j]==0)return 0;/*si une case est à 0 (vide) on renvoi 0*/
+    }
+   }
+   return 1; /*sinon on renvoie 1*/
+}
+
+/*
+R: permet d'affecter une valeur à une case du plateau
+E: 3 entier x,y et la valuer et un TAD plat
+S: 1 entier 1 l'affectation c'est bien passer 0 sinon
+*/
+
+int setcase(int x,int y,int val,plat p){
+  if(x >= p->c || y >= p->l || x<0 || y<0){/*teste si on depasse la taille du plateau*/
+    printf("coordonées invalide [%d,%d]\n",x,y);
+    return 0;
+  }
+  if(p->mat[x][y]!=0){/*test si la case est vide*/
+    printf("la case est déjà occupé\n");
+    return 0;
+  }
+  p->mat[x][y]=val;
+  return 1;
+  
+}
+
+/*
+R: permet de demander les coordonnées ou le joueur souhaite placer ces pions
+E: 1 TAD plat
+S: vide
+*/
+
+void saisir_coup(plat p) {
+    int x, y, res = 0;
+
+    while (!res) {
+        printf("Saisir des coordonnées x (entre 1 et %d) et y (entre 1 et %d) : ", p->l, p->c);
+        
+        /*Vérification de la saisie*/
+        if (scanf("%d %d", &x, &y) != 2) {
+            printf("Entrée invalide. Veuillez entrer deux nombres entiers.\n");
+            vider_buffer();
+            continue;
+        }
+
+        /*Vérification et placement du coup*/
+        res = setcase(x-1, y-1, 1, p);
+        if (!res) {
+            printf("Coordonnées invalides ou case occupée. Réessayez.\n");
+        }
+        
+        vider_buffer();
+    }
+
+    printf("Fin du tour\n");
+}
+
+
+
+void boucle_jeu_terminal(){
+  /*création et allocution du plateau*/
+  plat p;
+  p=allocution_plateau(LIGNE,COLONNE);
+  printf("début de la partie\n");
+  /*tant que le plateau n'est pas rempli*/
+  while(!plateau_remplie(p)){
+    printf("\033[H\033[J");/*clear le terminal*/
+    afficher_plateau(p);/*on affiche le plateau*/
+    saisir_coup(p);/*on demande un coup a l'utilisateur*/
+  }
+  liberer_plateau(p);
+  printf("fin de partie\n");
 }
 
 #endif /*_PLATEAU_C_*/
