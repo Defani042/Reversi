@@ -15,12 +15,14 @@ SRC_FILES = $(wildcard $(SRC_DIR)/*.c)
 #emplace chaque fichier source src/nom.c par build/nom.o
 OBJ_FILES = $(patsubst $(SRC_DIR)/%.c, $(BUILD_DIR)/%.o, $(SRC_FILES))
 
+
+all: $(EXEC)
 # Règle principale
 $(EXEC): $(BUILD_DIR) $(OBJ_FILES)
 	$(CC) -o $@ $(OBJ_FILES) $(LDFLAGS)
 
 # Compilation des fichiers objets
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c $(SRC_DIR)/%.h
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	$(CC) -c $(CFLAGS) $< -o $@
 
 # Création du dossier build s'il n'existe pas
