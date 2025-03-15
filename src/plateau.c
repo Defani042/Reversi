@@ -221,4 +221,180 @@ void boucle_jeu_terminal(){
   printf("fin de partie\n");
 }
 
+/*
+R: permet de lire si le coup est valide ou non
+E: 1 TAD plat, int x (ligne) et y (colonne) pour les coordonnées, et la couleur du joueur
+S: 0 si invalide, 1 est valide
+*/
+
+int coup_valide(plat p, int x, int y, int couleur){
+  int x_tmp, y_tmp, i, j, adversaire, trouve;
+  if (couleur == 1) adversaire = 2;
+  else adversaire = 1;
+/* On regarde les cas particuliers où le joueur a indiqué les coordonnées d'une case non vide ou d'une case aux coordonnées invalides*/
+  if ((x < 0) || (x >= p->c) || (y < 0) || (y >= p->c) || (p->mat[x][y] != 0)) return 0;
+
+  for (i = -1; i < 2; i++){
+    for (j = -1; j < 2; j++){
+      /* Une boucle sur les 8 positions possibles*/
+      if ((x+i < 0) || (x+i >= p->l) || (y+j < 0) || (y+j >= p->c) || ((x == x+i)&&(y == y+i))){
+        ;
+        /*Sont exclus les cas où les coordonnées tombent en dehors de la matrice où si les coordonnées sont égales à celle rentrées par l'utilisateur*/
+      }
+      else{
+        if (p->mat[x+i][y+j] == adversaire){
+          /* Si jamais les coordonnées qu'on regarde correspondent à celle d'un pion adversaire :*/
+          x_tmp = x+2*i;
+          y_tmp = y+2*j;
+          trouve = 0;
+          do{
+            /* Tant que les coordonnées qu'on regarde tombent sont définies dans la matrice :*/
+            if ((x_tmp < 0) || (x_tmp >= p->l) || (y_tmp < 0) || (y_tmp >= p->c)){
+              trouve = -1;
+            }
+            /*On regarde si les coordonnées correspondent a du vide (donc coup invalide) ou à un pion de la couleur du joueur (coup valide)*/
+            else{
+              if (p->mat[x_tmp][y_tmp] == couleur){
+                trouve = 1;
+              }
+              else{
+                if (p->mat[x_tmp][y_tmp] == 0){
+                  trouve = -1;
+                }
+              }
+              x_tmp += i;
+              y_tmp += j;
+            }
+          } while (trouve == 0);
+          if (trouve == 1){
+            /*Si on a trouvé un coup valide, on sort tout de suite des différentes boucles :*/
+            i = 2;
+            j = 2;
+          }
+        }
+      }
+    }
+  }
+  /*Si on a pas trouvé un coup valide, alors on renvoit 0, sinon 1*/
+  if (trouve != 1){
+    return 0;
+  }
+  return 1;
+}
+
+/*
+R: permet de trouver qui est le gagnant de la partie
+E: 1 TAD plat, couleur du joueur
+S: -1 si le bot est vainqueur, 1 si le joueur est vainqueur, 0 si égalité
+*/
+int position_gagnante(plat p, int couleur){
+  int score_j=0, score_b=0, x, y;
+  /*Deux boucles pour couvrir toutes les cases*/
+  for (x=0;x<p->l;x++){
+    for (y=0;y<p->c;y++){
+      /*Si c'est de la couleur du joueur, on augmente son score*/
+      if (p->mat[x][y] == couleur){
+        score_j++;
+      }
+      else{
+        /*Si c'est vide, personne n'a de point*/
+        if (p->mat[x][y] == 0){
+          ;
+        }
+        else{
+          /*Sinon, il ne reste plus que le cas où c'est la couleur du bot*/
+          score_b++;
+        }
+      }
+    }
+  }
+  if (score_j > score_b) return 1;
+  if (score_j == score_b) return 0;
+  return -1;
+}
+
+/*
+R: permet de créer une matrice de tous les coups valides
+E: 1 TAD plat, couleur du bot
+S: Une matrice de tous les coups valides
+*/
+int ** liste_coup_valide(plat p, int couleur){
+  int x, y;
+  int ** matrice;
+  /*allocution des lignes de la matrice*/
+  if ((matrice = (int **)calloc(p->l, sizeof(int *))) == NULL){
+    printf("erreur calloc \n");
+    exit(EXIT_FAILURE);
+  }
+
+  /*alloction des colonnes de la matrice*/
+  for (x = 0; x < p->l; x++){
+    if ((matrice[x] = (int *)calloc(p->c, sizeof(int))) == NULL){
+      printf("erreur calloc \n");
+      exit(EXIT_FAILURE);
+    }
+  }
+
+  /*On regarde pour chacune des cases s'il y a un coup valide*/
+  for (x=0;x<p->l;x++){
+    for (y = 0; y < p->c; y++){
+      matrice[x][y] = coup_valide(p, x, y, couleur);
+    }
+  } 
+
+  return matrice;
+}
+
+/*
+R: permet de renvoyer dans x et y les coordonnées que joue le bot.
+E: 1 TAD plat, couleur du bot, adresse de x et y
+S: Ne renvoit rien, modifie les valeurs d'adresse x et y. En cas d'erreur, x et y valent -1
+*/
+void coup_ordinateur(plat p, int couleur, int * x, int * y){
+  int ** matrice;
+  int nbr_coup = 0, x_tmp, y_tmp, cherche = 0, objectif;
+  matrice = liste_coup_valide(p, couleur);
+
+  /*On initialise les variables données dans la fonction afin de les renvoyer directement si on a pu jouer aucun coup*/
+  *x=-1;
+  *y=-1;
+
+  /*On compte le nombre de coups disponibles*/
+  for (x_tmp=0;x_tmp<p->l;x_tmp++){
+    for (y_tmp = 0; y_tmp < p->c; y_tmp++){
+      if (matrice[x_tmp][y_tmp] == 1){
+        nbr_coup++;
+      }
+    }
+  } 
+
+  /*On pioche aléatoirement quel sera le coup que le bot va jouer*/
+  objectif = (rand()%nbr_coup+1);
+
+  /*On trouve le coup numéro objectif, et on insère ses coordonnées dans x et y*/
+  for (x_tmp=0;x_tmp<p->l;x_tmp++){
+    for (y_tmp = 0; y_tmp < p->c; y_tmp++){
+      
+      if (matrice[x_tmp][y_tmp] == 1){
+        cherche++;
+        /*Si on a atteint*/
+        if (cherche == objectif){
+          *x = x_tmp;
+          *y = y_tmp;
+          /*On fait en sorte de sortir de la boucle*/
+          x_tmp = p->l;
+          y_tmp = p->c;
+        }
+      }
+    }
+  } 
+
+  /*libération des colonnes des matrices*/
+  for (x_tmp = 0; x_tmp < p->l; x_tmp++){
+    free (matrice[x_tmp]);
+  }
+  /*libération de la matrice*/
+  free (matrice);
+}
+
 #endif /*_PLATEAU_C_*/
