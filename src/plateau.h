@@ -38,7 +38,9 @@ int coup_valide(plat p, int x, int y, int couleur);
 
 int position_gagnante(plat p, int couleur);
 
-int ** liste_coup_valide(plat p, int couleur);
+plat liste_coup_valide(plat p, int couleur);
 
-void coup_ordinateur(plat p, int couleur, int * x, int * y);
+void coup_ordinateur(plat p, int * x, int * y);
+
+plat plat_supprimer_quatre(plat p);
 #endif /*_PLATEAU_H_*/

@@ -314,47 +314,30 @@ int position_gagnante(plat p, int couleur){
 }
 
 /*
-R: permet de créer une matrice de tous les coups valides
+R: permet d'ajouter des 4 dans la matrice de jeu afin de visualiser les coups valides
 E: 1 TAD plat, couleur du bot
-S: Une matrice de tous les coups valides
+S: Le plateau
 */
-int ** liste_coup_valide(plat p, int couleur){
-  int x, y;
-  int ** matrice;
-  /*allocution des lignes de la matrice*/
-  if ((matrice = (int **)calloc(p->l, sizeof(int *))) == NULL){
-    printf("erreur calloc \n");
-    exit(EXIT_FAILURE);
-  }
-
-  /*alloction des colonnes de la matrice*/
-  for (x = 0; x < p->l; x++){
-    if ((matrice[x] = (int *)calloc(p->c, sizeof(int))) == NULL){
-      printf("erreur calloc \n");
-      exit(EXIT_FAILURE);
-    }
-  }
-
+plat liste_coup_valide(plat p, int couleur){
+  int x,y;
   /*On regarde pour chacune des cases s'il y a un coup valide*/
   for (x=0;x<p->l;x++){
     for (y = 0; y < p->c; y++){
-      matrice[x][y] = coup_valide(p, x, y, couleur);
+      if (coup_valide(p, x, y, couleur) == 1){
+        p->mat[x][y] = 4;
+      }
     }
   } 
-
-  return matrice;
+  return p;
 }
 
 /*
 R: permet de renvoyer dans x et y les coordonnées que joue le bot.
-E: 1 TAD plat, couleur du bot, adresse de x et y
+E: 1 TAD plat déjà remplie de 4, adresse de x et y
 S: Ne renvoit rien, modifie les valeurs d'adresse x et y. En cas d'erreur, x et y valent -1
 */
-void coup_ordinateur(plat p, int couleur, int * x, int * y){
-  int ** matrice;
+void coup_ordinateur(plat p, int * x, int * y){
   int nbr_coup = 0, x_tmp, y_tmp, cherche = 0, objectif;
-  matrice = liste_coup_valide(p, couleur);
-
   /*On initialise les variables données dans la fonction afin de les renvoyer directement si on a pu jouer aucun coup*/
   *x=-1;
   *y=-1;
@@ -362,7 +345,7 @@ void coup_ordinateur(plat p, int couleur, int * x, int * y){
   /*On compte le nombre de coups disponibles*/
   for (x_tmp=0;x_tmp<p->l;x_tmp++){
     for (y_tmp = 0; y_tmp < p->c; y_tmp++){
-      if (matrice[x_tmp][y_tmp] == 1){
+      if (p->mat[x_tmp][y_tmp] == 4){
         nbr_coup++;
       }
     }
@@ -375,7 +358,7 @@ void coup_ordinateur(plat p, int couleur, int * x, int * y){
   for (x_tmp=0;x_tmp<p->l;x_tmp++){
     for (y_tmp = 0; y_tmp < p->c; y_tmp++){
       
-      if (matrice[x_tmp][y_tmp] == 1){
+      if (p->mat[x_tmp][y_tmp] == 4){
         cherche++;
         /*Si on a atteint*/
         if (cherche == objectif){
@@ -388,13 +371,18 @@ void coup_ordinateur(plat p, int couleur, int * x, int * y){
       }
     }
   } 
+}
 
-  /*libération des colonnes des matrices*/
-  for (x_tmp = 0; x_tmp < p->l; x_tmp++){
-    free (matrice[x_tmp]);
-  }
-  /*libération de la matrice*/
-  free (matrice);
+plat plat_supprimer_quatre(plat p){
+  int x,y;
+  for (x=0;x<p->l;x++){
+    for (y = 0; y < p->c; y++){
+      if (p->mat[x][y] == 4){
+        p->mat[x][y] = 0;
+      }
+    }
+  } 
+  return p;
 }
 
 #endif /*_PLATEAU_C_*/
