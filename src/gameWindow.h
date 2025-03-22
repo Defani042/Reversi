@@ -16,6 +16,8 @@ char conversion_colonne(int h, int y);
 
 void coordonnees(int h);
 
+void afficher_plateau(plat p, int h);
+
 void grille(int h);
 
 int setMainWindow();
