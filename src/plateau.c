@@ -232,23 +232,23 @@ int coup_valide(plat p, int x, int y, int couleur){
   if (couleur == 1) adversaire = 2;
   else adversaire = 1;
 /* On regarde les cas particuliers où le joueur a indiqué les coordonnées d'une case non vide ou d'une case aux coordonnées invalides*/
-  if ((x < 0) || (x >= p->c) || (y < 0) || (y >= p->c) || (p->mat[x][y] != 0)) return 0;
+  if ((x < 0) || (x >= p->l) || (y < 0) || (y >= p->c) || (p->mat[x][y] != 0)) return 0;
 
   for (i = -1; i < 2; i++){
     for (j = -1; j < 2; j++){
       /* Une boucle sur les 8 positions possibles*/
-      if ((x+i < 0) || (x+i >= p->l) || (y+j < 0) || (y+j >= p->c) || ((x == x+i)&&(y == y+i))){
+      if ((x+i < 0) || (x+i >= p->l) || (y+j < 0) || (y+j >= p->c) || ((x == x+i)&&(y == y+j))){
         ;
         /*Sont exclus les cas où les coordonnées tombent en dehors de la matrice où si les coordonnées sont égales à celle rentrées par l'utilisateur*/
       }
       else{
         if (p->mat[x+i][y+j] == adversaire){
           /* Si jamais les coordonnées qu'on regarde correspondent à celle d'un pion adversaire :*/
-          x_tmp = x+2*i;
-          y_tmp = y+2*j;
+          x_tmp = x+i*2;
+          y_tmp = y+j*2;
           trouve = 0;
           do{
-            /* Tant que les coordonnées qu'on regarde tombent sont définies dans la matrice :*/
+            /* Tant que les coordonnées qu'on regarde sont définies dans la matrice :*/
             if ((x_tmp < 0) || (x_tmp >= p->l) || (y_tmp < 0) || (y_tmp >= p->c)){
               trouve = -1;
             }
@@ -322,7 +322,7 @@ plat liste_coup_valide(plat p, int couleur){
   int x,y;
   /*On regarde pour chacune des cases s'il y a un coup valide*/
   for (x=0;x<p->l;x++){
-    for (y = 0; y < p->c; y++){
+    for (y=0;y<p->c;y++){
       if (coup_valide(p, x, y, couleur) == 1){
         p->mat[x][y] = 4;
       }
