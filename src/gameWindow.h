@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <MLV/MLV_all.h>
 
+#include "plateau.h"
+
 
 void affiche_piece(int h,char x,char y,int joueur);
 

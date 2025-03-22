@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <MLV/MLV_all.h>
 
+#include "gameWindow.h"
+
 #define FONT_PATH "fich/04B_30__.TTF"
 #define PATH_IMAGE "fich/fond.jpg"
 #define PATH_FOND_VERT "fich/vert.jpg"
@@ -21,16 +23,16 @@ S : rien
 void affiche_piece(int h, char x, char y, int joueur){
     int i,j;
 
-    if ((x >= 'a' || x <= 'h') && (y >= '0' || y <= '8')){ /*si les coordonnées sont coorectes*/
+    if ((x >= 'A' || x <= 'H') && (y >= '0' || y <= '8')){ /*si les coordonnées sont coorectes*/
 
         i = x-'A'+1;      /*Converti la lettre pour l'affichage*/
         j = y-'0';        /*Converti la lettre pour l'affichage*/
 
-        if(joueur==0){ /*Si le joueur est blanc*/
+        if(joueur==2){ /*Si le joueur est blanc*/
             MLV_draw_filled_circle(i*h/9+h/18,j*h/9+h/18,h/24,MLV_COLOR_WHITE);
         }
-        /*sinon*/
-        else MLV_draw_filled_circle(i*h/9+h/18,j*h/9+h/18,h/24,MLV_rgba(0,0,0,255));
+        if(joueur==1) MLV_draw_filled_circle(i*h/9+h/18,j*h/9+h/18,h/24,MLV_rgba(0,0,0,255)); /*si le joueur est noir*/
+        if(joueur==4) MLV_draw_filled_circle(i*h/9+h/18,j*h/9+h/18,h/48,MLV_rgba(172,172,172,255)); /*si le coup est jouable*/
     }
     /*si les coordonnées sont incorrectes, n'affiche rien*/
 }
@@ -67,6 +69,21 @@ char conversion_colonne(int h, int y){
 
     return c;
 }
+
+/*
+R : permet d'afficher le plateau
+E : plateau et hauteur de la fenetre
+S : 
+ */
+
+/*void afficher_plateau(plat p,int h){
+    char i,j;
+    for (i='A';i<='H';i++){
+        for (j='0';j<='8';j++){
+            affiche_piece(h,i,j,p->mat[i-'A'][j-'0']);
+        }
+    }
+    }*/
 
 /*
 R : Permet d'afficher les coordonnées
@@ -177,8 +194,8 @@ void jeu(){
     h=setMainWindow();
 
     /*Affichage 4 piece de base*/
-    affiche_piece(h,'D','4',0); /* 0 pour le joueur blanc*/
-    affiche_piece(h,'E','5',0);
+    affiche_piece(h,'D','4',2); /* 0 pour le joueur blanc*/
+    affiche_piece(h,'E','5',2);
     affiche_piece(h,'E','4',1); /* 1 ( ou autre ) pour le joueur noir*/
     affiche_piece(h,'D','5',1);
 
@@ -186,8 +203,9 @@ void jeu(){
         MLV_actualise_window();     /* actualise la fenêtre */
         MLV_wait_mouse(&x,&y);      /* attends un click et met les coordonnées dans x et y */
         if(x<h/9 && y<h/9) i=0;     /* quitte si on clique au bon endroit */
-        affiche_piece(h,conversion_ligne(h,x),conversion_colonne(h,y),0);
+        affiche_piece(h,conversion_ligne(h,x),conversion_colonne(h,y),4);
     }
+    MLV_free_window();
 }
 
 #endif /*_GAMEWINDOW_C_*/
