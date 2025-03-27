@@ -43,4 +43,6 @@ plat liste_coup_valide(plat p, int couleur);
 void coup_ordinateur(plat p, int * x, int * y);
 
 plat plat_supprimer_quatre(plat p);
+
+plat retourner_jetons(plat p, int x, int y, int couleur);
 #endif /*_PLATEAU_H_*/
