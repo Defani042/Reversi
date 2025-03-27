@@ -263,7 +263,7 @@ int coup_valide(plat p, int x, int y, int couleur){
                 trouve = 1;
               }
               else{
-                if (p->mat[x_tmp][y_tmp] == 0){
+                if ((p->mat[x_tmp][y_tmp] == 0) || (p->mat[x_tmp][y_tmp] == 4)){
                   trouve = -1;
                 }
               }
@@ -408,14 +408,12 @@ plat retourner_jetons(plat p, int x, int y, int couleur){
   if ((x < 0) || (x >= p->l) || (y < 0) || (y >= p->c) || (p->mat[x][y] != 4)) return p;
 
 /*On ajoute le jeton sur la case sélectionnée*/
-p->mat[x][y] = couleur;
-
+  p->mat[x][y] = couleur;
 /*La fonction reprend en grande partie la fonction "coup_valide"*/
   for (i = -1; i < 2; i++){
     for (j = -1; j < 2; j++){
       /* Une boucle sur les 8 positions possibles*/
       if ((x+i < 0) || (x+i >= p->l) || (y+j < 0) || (y+j >= p->c) || ((x == x+i)&&(y == y+j))){
-        ;
         /*Sont exclus les cas où les coordonnées tombent en dehors de la matrice où si les coordonnées sont égales à celle rentrées par l'utilisateur*/
       }
       else{
@@ -424,7 +422,7 @@ p->mat[x][y] = couleur;
           x_tmp = x+i*2;
           y_tmp = y+j*2;
           trouve = 0;
-          do{
+          while(trouve == 0){
             /* Tant que les coordonnées qu'on regarde sont définies dans la matrice :*/
             if ((x_tmp < 0) || (x_tmp >= p->l) || (y_tmp < 0) || (y_tmp >= p->c)){
               trouve = -1;
@@ -448,7 +446,7 @@ p->mat[x][y] = couleur;
               x_tmp += i;
               y_tmp += j;
             }
-          } while (trouve == 0);
+          }
         }
       }
     }
