@@ -213,11 +213,6 @@ void boucle_jeu_terminal(){
   printf("début de la partie\n");
   /*tant que le plateau n'est pas rempli*/
   while(!plateau_remplie(p)){
-
-    /*Partie de test !!!*/
-    p = liste_coup_valide(p, 2);
-    p = retourner_jetons(p, 3, 2, 2);
-    
     printf("\033[H\033[J");/*clear le terminal*/
     afficher_plateau(p);/*on affiche le plateau*/
     saisir_coup(p);/*on demande un coup a l'utilisateur*/
@@ -401,7 +396,7 @@ E: 1 TAD plat, la coordonnée x et y du coup joué et la couleur.
 S: Le TAD plat modifié
 */
 plat retourner_jetons(plat p, int x, int y, int couleur){
-  int x_tmp, y_tmp, i, j, adversaire, trouve;
+  int x_tmp, y_tmp, i, j, adversaire, trouve, cmpt;
   if (couleur == 1) adversaire = 2;
   else adversaire = 1;
 /* On regarde les cas particuliers où le joueur a indiqué les coordonnées d'une case non vide ou d'une case aux coordonnées invalides*/
@@ -422,6 +417,7 @@ plat retourner_jetons(plat p, int x, int y, int couleur){
           x_tmp = x+i*2;
           y_tmp = y+j*2;
           trouve = 0;
+          cmpt = 1;
           while(trouve == 0){
             /* Tant que les coordonnées qu'on regarde sont définies dans la matrice :*/
             if ((x_tmp < 0) || (x_tmp >= p->l) || (y_tmp < 0) || (y_tmp >= p->c)){
@@ -431,11 +427,12 @@ plat retourner_jetons(plat p, int x, int y, int couleur){
             else{
               if (p->mat[x_tmp][y_tmp] == couleur){
                 trouve = 1;
-                while ((x_tmp != x) && (y_tmp != y)){
+                while (cmpt != 0){
                   /*Partie modifiée de la fonction coup_valide. On remonte les coordonnées jusqu'à retomber sur les coordonnées de départ.*/
                   x_tmp -= i;
                   y_tmp -= j;
                   p->mat[x_tmp][y_tmp] = couleur;
+                  cmpt--;
                 }
               }
               else{
@@ -445,6 +442,7 @@ plat retourner_jetons(plat p, int x, int y, int couleur){
               }
               x_tmp += i;
               y_tmp += j;
+              cmpt++;
             }
           }
         }
