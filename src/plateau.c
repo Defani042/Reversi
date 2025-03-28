@@ -166,12 +166,12 @@ E: 3 entier x,y et la valuer et un TAD plat
 S: 1 entier 1 l'affectation c'est bien passer 0 sinon
 */
 
-int setcase(int x,int y,int val,plat p){
+int set_case_plateau(int x,int y,int val,plat p){
   if(x >= p->c || y >= p->l || x<0 || y<0){/*teste si on depasse la taille du plateau*/
     printf("coordonées invalide [%d,%d]\n",x,y);
     return 0;
   }
-  if(p->mat[x][y]!=0){/*test si la case est vide*/
+  if(p->mat[x][y]!=0 || p->mat[x][y]){/*test si la case est vide ou que le coup est jouable*/
     printf("la case est déjà occupé\n");
     return 0;
   }
@@ -199,7 +199,7 @@ void saisir_coup(plat p) {
         }
 
         /*Vérification et placement du coup*/
-        res = setcase(x-1, y-1, 1, p);
+        res = set_case_plateau(x-1, y-1, 1, p);
         if (!res) {
             printf("Coordonnées invalides ou case occupée. Réessayez.\n");
         }
@@ -208,6 +208,20 @@ void saisir_coup(plat p) {
     }
 
     printf("Fin du tour\n");
+}
+
+/*
+R: faire en sorte que tous les coup jouable soit remplacer par des case vide 
+E: un TAD plat
+S: vide 
+*/
+
+void reset_plateau(plat p){
+    for(i=0;i<p->l;i++){
+        for(j=0;j<p->c;j++){
+            if(p->mat[i][j]==4)set_case_plateau(i,j,0,p);
+        }
+    }
 }
 
 /*
