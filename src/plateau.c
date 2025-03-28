@@ -332,16 +332,12 @@ plat liste_coup_valide(plat p, int couleur){
 }
 
 /*
-R: permet de renvoyer dans x et y les coordonnées que joue le bot.
+R: permet de jouer un coup avec le bot
 E: 1 TAD plat déjà remplie de 4, adresse de x et y
-S: Ne renvoit rien, modifie les valeurs d'adresse x et y. En cas d'erreur, x et y valent -1
+S: Rnvoie 0 en cas d'erreur et 1 sinon.
 */
-void coup_ordinateur(plat p, int * x, int * y){
-  int nbr_coup = 0, x_tmp, y_tmp, cherche = 0, objectif;
-  /*On initialise les variables données dans la fonction afin de les renvoyer directement si on a pu jouer aucun coup*/
-  *x=-1;
-  *y=-1;
-
+int coup_ordinateur(plat p){
+  int nbr_coup = 0, x_tmp, y_tmp, cherche = 0, objectif, x ,y;
   /*On compte le nombre de coups disponibles*/
   for (x_tmp=0;x_tmp<p->l;x_tmp++){
     for (y_tmp = 0; y_tmp < p->c; y_tmp++){
@@ -350,6 +346,10 @@ void coup_ordinateur(plat p, int * x, int * y){
       }
     }
   } 
+
+if (nbr_coup == 0){
+  return 0;
+}
 
   /*On pioche aléatoirement quel sera le coup que le bot va jouer*/
   objectif = (rand()%nbr_coup+1);
@@ -362,8 +362,8 @@ void coup_ordinateur(plat p, int * x, int * y){
         cherche++;
         /*Si on a atteint*/
         if (cherche == objectif){
-          *x = x_tmp;
-          *y = y_tmp;
+          x = x_tmp;
+          y = y_tmp;
           /*On fait en sorte de sortir de la boucle*/
           x_tmp = p->l;
           y_tmp = p->c;
@@ -371,6 +371,10 @@ void coup_ordinateur(plat p, int * x, int * y){
       }
     }
   } 
+
+  /*On joue le coup*/
+  /* Jouer coup + retourner*/
+  return 1;
 }
 
 /*
