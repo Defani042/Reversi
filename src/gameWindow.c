@@ -23,10 +23,10 @@ S : rien
 void affiche_piece(int h, char x, char y, int joueur){
     int i,j;
 
-    if ((x >= 'A' || x <= 'H') && (y >= '0' || y <= '8')){ /*si les coordonnées sont coorectes*/
+    if ((x >= 'A' || x <= 'H') && (y >= '0' || y <= '7')){ /*si les coordonnées sont coorectes*/
 
         i = x-'A'+1;      /*Converti la lettre pour l'affichage*/
-        j = y-'0';        /*Converti la lettre pour l'affichage*/
+        j = y-'0'+1;        /*Converti la lettre pour l'affichage*/
 
         if(joueur==2){ /*Si le joueur est blanc*/
             MLV_draw_filled_circle(i*h/9+h/18,j*h/9+h/18,h/24,MLV_COLOR_WHITE);
@@ -43,12 +43,12 @@ E : coordonnées y
 S : le caractère de la ligne
 */
 
-char conversion_ligne(int h, int x){
+char conversion_ligne(int h,int x){
     int j;
     char l='z'; /*l = ligne*/
     
-    for(j=1;j<9;j++){   /*Converti les coordonnées y de la souris en lettre*/
-        if(x>h/9*j) l=j+'A'-1;
+    for(j=1;j<9;j++){   /*Converti les coordonnées x de la souris en lettre*/
+        if(x>h/9*j) l=j+'A';
     }
     return l;
 }
@@ -59,11 +59,11 @@ E : coordonnées x
 S : le caractère de la colonne
 */
 
-char conversion_colonne(int h, int y){
+char conversion_colonne(int h,int y){
     int i;
     char c='z'; /*l = colonne*/
     
-    for(i=1;i<9;i++){ /*Converti les coordonnées x de la souris en chiffre*/
+    for(i=1;i<9;i++){ /*Converti les coordonnées y de la souris en chiffre*/
         if(y>h/9*i) c=i+'0';
     }
 
@@ -76,11 +76,11 @@ E : plateau et hauteur de la fenetre
 S : 
  */
 
-void afficher_plateau_MLV(plat p,int h){
+void afficher_plateau_MLV(s_plateau p,int h){
     char i,j;
     for (i='A';i<='H';i++){
         for (j='0';j<='8';j++){
-            affiche_piece(h,i,j,p->mat[i-'A'][j-'0']);
+            affiche_piece(h,i,j,p.mat[i-'A'][j-'0']);
         }
     }
 }
@@ -165,46 +165,182 @@ void background(int h){
 
 /*
 R : Permet de créer la fenêtre princiale
-E : rien
+E : plateau
 S : la taille de la fenêtre
 */
 
-int setMainWindow(){
+int setMainWindow(s_plateau p){
     int height;
 
     height = MLV_get_desktop_height()-75; /* initialise la taille de l'écran*/
 
-    MLV_create_window("Réversi","Réversi",height,height); /* créer la fenêtre*/
+
     background(height); /*met le fond d'écran*/
     grille(height);     /* créer la grille*/
     coordonnees(height);    /* affiches les coordonnées */
+    afficher_plateau_MLV(p,height);
     MLV_actualise_window(); /* actualise la fenêtre */
     return height;          /* renvoie la taille de la fenêtre*/
 }
 
+
+/*
+R : Affiche la fin de la partie
+E : plateau et height
+S : rien
+*/
+
+void fin_partie(plat plat, int h){
+    int n,b,p,x,y;
+    MLV_Font* font=NULL;                    /* font initialisé a NULL */
+    p=20;                                   /* taille pixels */
+    font = MLV_load_font(FONT_PATH , p );   /* chargement font */
+
+    b=plat->scoreb;
+    n=plat->scoren;
+    if(b<n){
+        MLV_draw_filled_rectangle(0,0,h,h/9,MLV_COLOR_BLACK);
+        MLV_draw_text_with_font(
+            20, 20,
+            "Les noirs ont gagne",                        /* on affiche le caractère */
+            font, MLV_rgba(135,135,135,255)
+        );
+    }
+    if (n<b){
+        MLV_draw_filled_rectangle(0,0,h,h/9,MLV_COLOR_WHITE);
+        MLV_draw_text_with_font(
+            20, 20,
+            "Les blancs ont gagne",                        /* on affiche le caractère */
+            font, MLV_rgba(135,135,135,255)
+        );
+    }
+    if(n==b){
+        MLV_draw_filled_rectangle(0,0,h,h/9,MLV_COLOR_YELLOW);
+        MLV_draw_text_with_font(
+            h/4, 30,
+            "Egalite",                        /* on affiche le caractère */
+            font, MLV_rgba(135,135,135,255)
+        );
+    }
+    MLV_actualise_window();
+    MLV_wait_mouse(&x,&y);
+}   
+
+/*
+R: permet de demander les coordonnées ou le joueur souhaite placer ces pions
+E: 1 TAD plat
+S: vide
+*/
+
+void saisir_coup_mlv(plat p,int h) {
+    int x=0, y=0, res = 0;
+    while (!res) {
+        
+        /*Vérification de la saisie*/
+        MLV_wait_mouse(&x ,&y);
+        x=conversion_ligne(h,x)-'A'-1;
+        y=conversion_colonne(h,y)-'0'-1;
+
+        /*Vérification et placement du coup*/
+        res = set_case_plateau(x, y, p->joueur, p);
+    }
+    
+    p = retourner_jetons(p,x,y,p->joueur);
+    printf("\n");
+    afficher_mat(p);
+    printf("\n");
+    printf("Fin du tour\n");
+}
+
+/*
+R : permet d'afficher le choix des couleurs
+E : vide
+S : vide
+*/
+
+void affichage_choix_joueur(int h){
+    MLV_Font* font=NULL;                             /* font initialisé a NULL */
+    int p;
+    p=20;                                   /* taille pixels */
+    font = MLV_load_font(FONT_PATH , p );   /* chargement font */
+    MLV_draw_filled_rectangle(0,0,h/2,h,MLV_COLOR_WHITE);
+    MLV_draw_filled_rectangle(h/2,0,h/2,h,MLV_COLOR_BLACK);
+    MLV_draw_text_with_font(
+        0, 30,
+        "Cliquez sur une couleur pour choisir la votre",                        /* on affiche le caractère */
+        font, MLV_rgba(135,135,135,255)
+    );
+    MLV_actualise_window();
+}
+
+
+/*
+R : permet de choisir la couleur
+E : vide
+S : vide
+*/
+
+void choisir_joueur_mlv(plat p,int h){
+    int x,y;
+    affichage_choix_joueur(h);
+    MLV_wait_mouse(&x,&y);
+    if(x<h/2) {       
+        p->joueur = 2;
+        p->bot = 1;
+    }
+    else{
+        p->joueur = 1;
+        p->bot = 2;
+    }
+}
+
+/*
+R: gestion de la boucle de jeu sur mlv
+E: vide
+S: vide
+*/
+
+void boucle_jeu_mlv(){
+    /*création et allocution du plateau*/
+    int h;
+    plat p;
+    p=allocution_plateau(LIGNE,COLONNE);
+    h=setMainWindow(*p);
+    choisir_joueur_mlv(p,h);/*demande au joueur la couleur qu'il veux jouer*/
+    /*tant que le plateau n'est pas rempli*/
+    while(verifier_tour_joueur(p,p->joueur) || verifier_tour_joueur(p,p->bot)){
+      p=liste_coup_valide(p,p->joueur); /*on affiche les coups valides*/
+      h=setMainWindow(*p);
+      if(verifier_tour_joueur(p,p->joueur)){
+         saisir_coup_mlv(p,h);/*on demande un coup a l'utilisateur*/  
+      }
+      p=plat_supprimer_quatre(p); /*on efface les coups jouables pour le joueur*/
+      if(verifier_tour_joueur(p,p->bot)){
+          coup_ordinateur(p); /*le bot joue*/
+      }
+      calculer_score(p);/*on calcule le score*/
+    }
+    h=setMainWindow(*p);
+    fin_jeux(p);
+    liberer_plateau(p);
+    fin_partie(p,h);
+   
+  }
+
 /*
 R : permet de jouer
-wE : rien
+E : rien
 S : rien
 */
 
 void jeu(){
-    int x,y,h,i=1;
+    int height;
+    height = MLV_get_desktop_height()-75; 
 
-    h=setMainWindow();
+    MLV_create_window("Réversi","Réversi",height,height); /* créer la fenêtre*/
 
-    /*Affichage 4 piece de base*/
-    affiche_piece(h,'D','4',2); /* 0 pour le joueur blanc*/
-    affiche_piece(h,'E','5',2);
-    affiche_piece(h,'E','4',1); /* 1 ( ou autre ) pour le joueur noir*/
-    affiche_piece(h,'D','5',1);
-
-    while(i){ /*boucle de jeu*/
-        MLV_actualise_window();     /* actualise la fenêtre */
-        MLV_wait_mouse(&x,&y);      /* attends un click et met les coordonnées dans x et y */
-        if(x<h/9 && y<h/9) i=0;     /* quitte si on clique au bon endroit */
-        affiche_piece(h,conversion_ligne(h,x),conversion_colonne(h,y),4);
-    }
+    boucle_jeu_mlv();
+    
     MLV_free_window();
 }
 
