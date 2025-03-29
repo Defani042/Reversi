@@ -5,14 +5,18 @@
 #include <stdio.h>
 #include <MLV/MLV_all.h>
 
+#include "plateau.h"
+
 
 void affiche_piece(int h,char x,char y,int joueur);
 
-void conversion(int h, int x, int y,int j);
+char conversion_ligne(int h, int x);
 
-void quitter(int h);
+char conversion_colonne(int h, int y);
 
 void coordonnees(int h);
+
+void afficher_plateau_MLV(plat p, int h);
 
 void grille(int h);
 

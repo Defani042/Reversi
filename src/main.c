@@ -19,7 +19,7 @@ int main(int argc,char*argv[]){
     exit(EXIT_SUCCESS);
   }
 /*Test MainWindows*/
-  /*jeu();*/
+  jeu();
   boucle_jeu_terminal();
   exit(EXIT_SUCCESS);
 }
