@@ -123,7 +123,7 @@ void coordonnees(int h){
             font, MLV_rgba(225,192,152,255)
         );
     }
-    free(font);
+    MLV_free_font(font);
     font=NULL;
 }
 
@@ -159,14 +159,14 @@ void background(int h){
     MLV_resize_image(background,h,h);
     MLV_draw_image(background,0,0);
 
-    free(background);
+    MLV_free_image(background);
     background=NULL;
     background = MLV_load_image(PATH_FOND_VERT);
 
     MLV_resize_image(background,h-h/9,h-h/9);
     MLV_draw_image(background,h/9,h/9);
     
-    free(background);
+    MLV_free_image(background);
     background=NULL;
 }
 
@@ -231,7 +231,7 @@ void fin_partie(plat plat, int h){
     }
     MLV_actualise_window();
     MLV_wait_mouse(&x,&y);
-    free(font);
+    MLV_free_font(font);
     font=NULL;
 }   
 
@@ -280,7 +280,7 @@ void affichage_choix_joueur(int h){
         font, MLV_rgba(135,135,135,255)
     );
     MLV_actualise_window();
-    free(font);
+    MLV_free_font(font);
     font=NULL;
 }
 
