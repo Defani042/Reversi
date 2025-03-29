@@ -316,8 +316,11 @@ void boucle_jeu_mlv(){
       }
       p=plat_supprimer_quatre(p); /*on efface les coups jouables pour le joueur*/
       if(verifier_tour_joueur(p,p->bot)){
+          h=setMainWindow(*p);
+          MLV_wait_milliseconds(500);
           coup_ordinateur(p); /*le bot joue*/
       }
+      p=plat_supprimer_quatre(p); /*on efface les coups jouables pour le joueur*/
       calculer_score(p);/*on calcule le score*/
     }
     h=setMainWindow(*p);
