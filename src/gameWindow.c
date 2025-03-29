@@ -76,7 +76,7 @@ E : plateau et hauteur de la fenetre
 S : 
  */
 
-void afficher_plateau(plat p,int h){
+void afficher_plateau_MLV(plat p,int h){
     char i,j;
     for (i='A';i<='H';i++){
         for (j='0';j<='8';j++){
@@ -184,7 +184,7 @@ int setMainWindow(){
 
 /*
 R : permet de jouer
-E : rien
+wE : rien
 S : rien
 */
 
