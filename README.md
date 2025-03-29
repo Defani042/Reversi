@@ -24,7 +24,12 @@ Pour pouvoir exécuter le Makefile du projet, il vous faut installer la librairi
 le code est agencer en différents modules :
    
    - **Main**: le module principale
-   - **Gamewindow**: module de gestion de la fenêtre de jeux 
+   - **Gamewindow**: module de gestion de la fenêtre de jeux
+   - **Plateau**: module de gestion du plateau de jeux
+
+le code contient les structure suivantes :
+
+   - **plat**:contenant les information relative au plateau de jeux
 
 ## Condition d'utilisation
 
