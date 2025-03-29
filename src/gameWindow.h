@@ -14,13 +14,27 @@ char conversion_ligne(int h, int x);
 
 char conversion_colonne(int h, int y);
 
+void afficher_plateau_MLV(s_plateau p,int h);
+
 void coordonnees(int h);
 
-void afficher_plateau_MLV(plat p, int h);
+void afficher_plateau_MLV(s_plateau p, int h);
 
 void grille(int h);
 
-int setMainWindow();
+void background(int h);
+
+int setMainWindow(s_plateau p);
+
+void fin_partie(plat plat, int h);
+
+void saisir_coup_mlv(plat p,int h);
+
+void affichage_choix_joueur(int h);
+
+void choisir_joueur_mlv(plat p,int h);
+
+void boucle_jeu_mlv();
 
 void jeu();
 
