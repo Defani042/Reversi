@@ -14,7 +14,33 @@ void vider_buffer() {
     while ((c = getchar()) != '\n' && c != EOF);  /* Lire jusqu'à la fin de ligne ou EOF*/
 }
 
-
+/*
+R: permet au jouer de choisir sa couleur 
+E: un TAD plat
+S: vide
+*/
+void choisir_joueur(plat p){
+    int c=0;
+    printf("Couleur Noire = 1\n");
+    printf("Couleur Blanc = 2\n");
+    printf("Quelle couleur voulez vous jouez ?\n");
+    /*Vérification de la saisie*/
+    while(c!=1 && c!=2){
+        if (scanf("%d",&c) != 1) {
+            printf("Entrée invalide. Veuillez entrer un entier (1 ou 2).\n");
+            vider_buffer();
+        }
+        vider_buffer();
+    }
+    if(c==1){
+        p->joueur = 1;
+        p->bot = 2;
+    }
+    else{
+        p->joueur = 2;
+        p->bot = 1;
+    }
+}
 /*
 R: allouer un TAD plat dans la mémoire
 E: 2 entiers <nb_ligne> <nb_colonne>
@@ -53,6 +79,12 @@ plat allocution_plateau(int l,int c){
   p->mat[4][4]=1;
   p->mat[3][4]=2;
   p->mat[4][3]=2;
+  /*le score correpson au nombre de pions de meme couleur sur le plateau*/
+  p->scoreb = 2;
+  p->scoren = 2;
+  /*setting de base le joueur => noire et le bot => Blancs*/
+  p->joueur = 1;
+  p->bot = 2; 
   return p;
 }
 
@@ -80,6 +112,29 @@ void liberer_plateau(plat p){
 }
 
 /*
+R: calculer le score du plateu
+E: un TAD plat
+S: vide
+*/
+
+void calculer_score(plat p){
+    int i,j;
+    p->scoren = 0;
+    p->scoreb = 0;
+    /*on parcourps le plateau*/
+    for(i=0;i<p->c;i++){
+        for(j=0;j<p->l;j++){
+            if(p->mat[i][j]==1){
+                p->scoren++;
+            }
+            if(p->mat[i][j]==2){
+                p->scoreb++;
+            }
+        }
+    }
+}
+
+/*
 R: affichage du TAD dans le terminale
 E: un TAD plat
 S: vide
@@ -92,6 +147,8 @@ void afficher_plateau(plat p){
   printf("Case Noir = 'N'\n");
   printf("Case Blanche = 'B'\n");
   printf("Case jouable = '+'\n");
+  /*printf("Taille_c =  %d\n",p->c);
+    printf("Taille_l = %d\n",p->l);*/
   printf("    ");
   for(i=0;i<p->c;i++){
     printf("%d ",i+1);
@@ -111,7 +168,7 @@ void afficher_plateau(plat p){
       case 2:/*cas ou la case est Blanche*/
 	printf(" B");
 	break;
-      case 3:
+      case 4:
 	printf(" +");
 	break;
       default:/*cas d'erreur*/
@@ -125,6 +182,12 @@ void afficher_plateau(plat p){
   }
   /*bordure inférieur du plateau*/
   printf("   ---------------- \n");
+  printf("score équipe Noire : %d\n",p->scoren);
+  printf("score équipe Blanc : %d\n",p->scoreb);
+
+/*printf("\n");
+  afficher_mat(p);
+  printf("\n");*/
 }
 
 /*
@@ -171,8 +234,8 @@ int set_case_plateau(int x,int y,int val,plat p){
     printf("coordonées invalide [%d,%d]\n",x,y);
     return 0;
   }
-  if(p->mat[x][y]!=0 || p->mat[x][y]){/*test si la case est vide ou que le coup est jouable*/
-    printf("la case est déjà occupé\n");
+  if(p->mat[x][y]!=4){/*test si la case est vide ou que le coup est jouable*/
+    printf("la case est déjà occupé ou le coup est invalide\n");
     return 0;
   }
   p->mat[x][y]=val;
@@ -187,7 +250,7 @@ S: vide
 */
 
 void saisir_coup(plat p) {
-    int x, y, res = 0;
+    int x=0, y=0, res = 0;
 
     while (!res) {
         printf("Saisir des coordonnées x (entre 1 et %d) et y (entre 1 et %d) : ", p->l, p->c);
@@ -197,53 +260,24 @@ void saisir_coup(plat p) {
             printf("Entrée invalide. Veuillez entrer deux nombres entiers.\n");
             vider_buffer();
         }
-
+        y--;
+        x--;
         /*Vérification et placement du coup*/
-        res = set_case_plateau(x-1, y-1, 1, p);
+        res = set_case_plateau(x, y, p->joueur, p);
         if (!res) {
             printf("Coordonnées invalides ou case occupée. Réessayez.\n");
         }
         
         vider_buffer();
     }
-
+    
+    p = retourner_jetons(p,x,y,p->joueur);
+    printf("\n");
+    afficher_mat(p);
+    printf("\n");
     printf("Fin du tour\n");
 }
 
-/*
-R: faire en sorte que tous les coup jouable soit remplacer par des case vide 
-E: un TAD plat
-S: vide 
-*/
-
-void reset_plateau(plat p){
-    for(i=0;i<p->l;i++){
-        for(j=0;j<p->c;j++){
-            if(p->mat[i][j]==4)set_case_plateau(i,j,0,p);
-        }
-    }
-}
-
-/*
-R: gestion de la boucle de jeu sur le terminale
-E: vide
-S: vide
-*/
-
-void boucle_jeu_terminal(){
-  /*création et allocution du plateau*/
-  plat p;
-  p=allocution_plateau(LIGNE,COLONNE);
-  printf("début de la partie\n");
-  /*tant que le plateau n'est pas rempli*/
-  while(!plateau_remplie(p)){
-    printf("\033[H\033[J");/*clear le terminal*/
-    afficher_plateau(p);/*on affiche le plateau*/
-    saisir_coup(p);/*on demande un coup a l'utilisateur*/
-  }
-  liberer_plateau(p);
-  printf("fin de partie\n");
-}
 
 /*
 R: permet de lire si le coup est valide ou non
@@ -356,16 +390,13 @@ plat liste_coup_valide(plat p, int couleur){
 }
 
 /*
-R: permet de renvoyer dans x et y les coordonnées que joue le bot.
+R: permet de jouer un coup avec le bot
 E: 1 TAD plat déjà remplie de 4, adresse de x et y
-S: Ne renvoit rien, modifie les valeurs d'adresse x et y. En cas d'erreur, x et y valent -1
+S: Rnvoie 0 en cas d'erreur et 1 sinon.
 */
-void coup_ordinateur(plat p, int * x, int * y){
-  int nbr_coup = 0, x_tmp, y_tmp, cherche = 0, objectif;
-  /*On initialise les variables données dans la fonction afin de les renvoyer directement si on a pu jouer aucun coup*/
-  *x=-1;
-  *y=-1;
 
+int coup_ordinateur(plat p){
+    int nbr_coup = 0, x_tmp, y_tmp, cherche = 0, objectif, x=0 ,y=0,res;
   /*On compte le nombre de coups disponibles*/
   for (x_tmp=0;x_tmp<p->l;x_tmp++){
     for (y_tmp = 0; y_tmp < p->c; y_tmp++){
@@ -375,9 +406,13 @@ void coup_ordinateur(plat p, int * x, int * y){
     }
   } 
 
+if (nbr_coup == 0){
+  return 0;
+}
+
   /*On pioche aléatoirement quel sera le coup que le bot va jouer*/
   objectif = (rand()%nbr_coup+1);
-
+  
   /*On trouve le coup numéro objectif, et on insère ses coordonnées dans x et y*/
   for (x_tmp=0;x_tmp<p->l;x_tmp++){
     for (y_tmp = 0; y_tmp < p->c; y_tmp++){
@@ -386,8 +421,8 @@ void coup_ordinateur(plat p, int * x, int * y){
         cherche++;
         /*Si on a atteint*/
         if (cherche == objectif){
-          *x = x_tmp;
-          *y = y_tmp;
+          x = x_tmp;
+          y = y_tmp;
           /*On fait en sorte de sortir de la boucle*/
           x_tmp = p->l;
           y_tmp = p->c;
@@ -395,6 +430,17 @@ void coup_ordinateur(plat p, int * x, int * y){
       }
     }
   } 
+
+  /*On joue le coup*/
+  res= set_case_plateau(x,y,p->bot,p);
+    if (!res) {
+        printf("Coup Bot invalide.\n");
+        printf("coup joué en [%d,%d]\n",x+1,y+1);
+    }
+   p=plat_supprimer_quatre(p);
+   p=retourner_jetons(p,x,y,p->bot);
+  
+  return 1;
 }
 
 /*
@@ -419,15 +465,14 @@ R: Retourne les jetons entourés
 E: 1 TAD plat, la coordonnée x et y du coup joué et la couleur.
 S: Le TAD plat modifié
 */
+
 plat retourner_jetons(plat p, int x, int y, int couleur){
   int x_tmp, y_tmp, i, j, adversaire, trouve, cmpt;
   if (couleur == 1) adversaire = 2;
   else adversaire = 1;
 /* On regarde les cas particuliers où le joueur a indiqué les coordonnées d'une case non vide ou d'une case aux coordonnées invalides*/
-  if ((x < 0) || (x >= p->l) || (y < 0) || (y >= p->c) || (p->mat[x][y] != 4)) return p;
+  if ((x < 0) || (x >= p->l) || (y < 0) || (y >= p->c) || (p->mat[x][y] != couleur)) return p;
 
-/*On ajoute le jeton sur la case sélectionnée*/
-  p->mat[x][y] = couleur;
 /*La fonction reprend en grande partie la fonction "coup_valide"*/
   for (i = -1; i < 2; i++){
     for (j = -1; j < 2; j++){
@@ -475,5 +520,89 @@ plat retourner_jetons(plat p, int x, int y, int couleur){
   }
   return p;
 }
+
+/*
+R: verifie si le joeur peux jouer sur le plateau
+E: 1 TAD plat et un entier
+S: 1 si on peux jouer sinon 0
+*/
+
+int verifier_tour_joueur(plat p, int val){
+    int i,j;
+    p = liste_coup_valide(p,val);/*on donne la liste des coups valide*/
+    for (i=0;i<p->l;i++){
+        for (j=0;j<p->c;j++){
+            if(p->mat[i][j]== 4)return 1; /* on retourne 1 */
+        }
+    }
+    switch (val){
+    case 1:/*cas ou le joueur Noire ne peux pas jouer*/
+	printf("Les pions Noires ne peuvent pas jouer au tours des blancs.\n");
+	break;
+    case 2:
+        printf("Les pions Blancs ne peuvent pas jouer au tours des Noires.\n");
+        break;
+    default:
+        printf("Erreur: le joueur %d n'existe pas! \n",val);
+        break;
+    }      
+    return 0;
+}
+
+/*
+R: gestion de la fin de partie 
+E: un TAD plat
+S: vide
+*/
+
+void fin_jeux(plat p){
+    if(p->scoreb > p->scoren){
+        printf("Les pions Blancs Gagnent! \n");
+        printf("Blanc: %d",p->scoreb);
+        printf("Noire: %d",p->scoren);
+    }
+    else if(p->scoreb < p->scoren){
+        printf("Les pions Noires Gagnent! \n");
+        printf("Noire: %d",p->scoren);
+        printf("Blanc: %d",p->scoreb);
+    }
+    else{
+        printf("Egalité !!!");
+        printf("Blanc: %d",p->scoreb);
+        printf("Noire: %d",p->scoren);
+    }
+}
+
+/*
+R: gestion de la boucle de jeu sur le terminale
+E: vide
+S: vide
+*/
+
+void boucle_jeu_terminal(){
+  /*création et allocution du plateau*/
+  plat p;
+  p=allocution_plateau(LIGNE,COLONNE);
+  choisir_joueur(p);/*demande au joueur la couleur qu'il veux jouer*/
+  /*tant que le plateau n'est pas rempli*/
+  while(verifier_tour_joueur(p,p->joueur) || verifier_tour_joueur(p,p->bot)){
+    printf("\033[H\033[J");/*clear le terminal*/
+    p=liste_coup_valide(p,p->joueur); /*on affiche les coups valides*/
+    afficher_plateau(p);/*on affiche le plateau*/
+    if(verifier_tour_joueur(p,p->joueur)){
+       saisir_coup(p);/*on demande un coup a l'utilisateur*/  
+    }
+    p=plat_supprimer_quatre(p); /*on efface les coups jouables pour le joueur*/
+    if(verifier_tour_joueur(p,p->bot)){
+        coup_ordinateur(p); /*le bot joue*/
+    }
+    calculer_score(p);/*on calcule le score*/
+  }
+  fin_jeux(p);
+  liberer_plateau(p);
+  printf("fin de partie\n");
+ 
+}
+
 
 #endif /*_PLATEAU_C_*/
