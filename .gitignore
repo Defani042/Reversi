@@ -1,5 +1,6 @@
 # Ignorer le dossier de compilation
 build/
 
-# Ignorer l'exécutable
+# Ignorer les exécutables 
 Reversi
+Recersi.db
