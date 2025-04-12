@@ -521,6 +521,27 @@ plat retourner_jetons(plat p, int x, int y, int couleur){
   return p;
 }
 
+int eval(plat p, int couleur){
+  int x, y, score=0;
+  int mat_eval[8][8] = {
+    {3,1,1,1,1,1,1,3},
+    {1,1,1,1,1,1,1,1},
+    {1,1,1,1,1,1,1,1},
+    {1,1,1,1,1,1,1,1},
+    {1,1,1,1,1,1,1,1},
+    {1,1,1,1,1,1,1,1},
+    {1,1,1,1,1,1,1,1},
+    {3,1,1,1,1,1,1,3}};
+  for (x=0;x<p->l;x++){
+    for (y=0;y<p->c;y++){
+      if (p->mat[x][y] == couleur){
+        score += mat_eval[x][y];
+      } 
+    }
+  }
+  return score;
+}
+
 /*
 R: verifie si le joeur peux jouer sur le plateau
 E: 1 TAD plat et un entier
