@@ -558,18 +558,18 @@ S: vide
 void fin_jeux(plat p){
     if(p->scoreb > p->scoren){
         printf("Les pions Blancs Gagnent! \n");
-        printf("Blanc: %d",p->scoreb);
-        printf("Noire: %d",p->scoren);
+        printf("Blanc: %d\n",p->scoreb);
+        printf("Noire: %d\n",p->scoren);
     }
     else if(p->scoreb < p->scoren){
         printf("Les pions Noires Gagnent! \n");
-        printf("Noire: %d",p->scoren);
-        printf("Blanc: %d",p->scoreb);
+        printf("Noire: %d\n",p->scoren);
+        printf("Blanc: %d\n",p->scoreb);
     }
     else{
         printf("Egalité !!!");
-        printf("Blanc: %d",p->scoreb);
-        printf("Noire: %d",p->scoren);
+        printf("Blanc: %d\n",p->scoreb);
+        printf("Noire: %d\n",p->scoren);
     }
 }
 

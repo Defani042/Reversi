@@ -123,6 +123,8 @@ void coordonnees(int h){
             font, MLV_rgba(225,192,152,255)
         );
     }
+    MLV_free_font(font);
+    font=NULL;
 }
 
 /*
@@ -157,10 +159,15 @@ void background(int h){
     MLV_resize_image(background,h,h);
     MLV_draw_image(background,0,0);
 
+    MLV_free_image(background);
+    background=NULL;
     background = MLV_load_image(PATH_FOND_VERT);
 
     MLV_resize_image(background,h-h/9,h-h/9);
     MLV_draw_image(background,h/9,h/9);
+    
+    MLV_free_image(background);
+    background=NULL;
 }
 
 /*
@@ -224,6 +231,8 @@ void fin_partie(plat plat, int h){
     }
     MLV_actualise_window();
     MLV_wait_mouse(&x,&y);
+    MLV_free_font(font);
+    font=NULL;
 }   
 
 /*
@@ -271,6 +280,8 @@ void affichage_choix_joueur(int h){
         font, MLV_rgba(135,135,135,255)
     );
     MLV_actualise_window();
+    MLV_free_font(font);
+    font=NULL;
 }
 
 
@@ -316,8 +327,11 @@ void boucle_jeu_mlv(){
       }
       p=plat_supprimer_quatre(p); /*on efface les coups jouables pour le joueur*/
       if(verifier_tour_joueur(p,p->bot)){
+          h=setMainWindow(*p);
+          MLV_wait_milliseconds(500);
           coup_ordinateur(p); /*le bot joue*/
       }
+      p=plat_supprimer_quatre(p); /*on efface les coups jouables pour le joueur*/
       calculer_score(p);/*on calcule le score*/
     }
     h=setMainWindow(*p);
