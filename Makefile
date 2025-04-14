@@ -9,6 +9,7 @@ LDFLAGS = `pkg-config --libs-only-other --libs-only-L --libs-only-l MLV`
 BUILD_DIR = build
 SRC_DIR = src
 EXEC = Reversi
+READ = Rendu 
 
 # Récupère tous les fichiers .c du dossier src/
 SRC_FILES = $(wildcard $(SRC_DIR)/*.c)
@@ -28,6 +29,11 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 # Création du dossier build s'il n'existe pas
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
+
+latex:
+	pdflatex Présentation.tex
+	pdflatex Présentation.tex
+	rm -rf Présentation.aux Présentation.log Présentation.nav Présentation.out Présentation.snm Présentation.toc
 
 # Nettoyage des fichiers générés
 clean:
