@@ -12,7 +12,46 @@
 #define PATH_FOND_VERT "fich/vert.jpg"
 #define N 5
 
+/*
+R: Permet d'afficher le score
+E: taille fentre, plateau p
+S: rien
+*/
 
+void affiche_score(int h, plat plateau){
+    char noir[N];
+    char blanc[N];
+    MLV_Font* font=NULL;                           /* font initialisé a NULL */
+    int p;
+    p=40;
+    font = MLV_load_font(FONT_PATH , p );
+    sprintf(noir,"%d",plateau->scoren);
+    sprintf(blanc,"%d",plateau->scoreb);
+    MLV_draw_text_with_font(
+        h + 75, (h/3)*2 + 50,
+        noir,                        /* on affiche le caractère */
+        font, MLV_rgba(0,0,0,0)
+        );
+    MLV_draw_text_with_font(
+        h + 75, h/3 + 50,
+        blanc,                        /* on affiche le caractère */
+        font, MLV_rgba(255,255,255,255)
+        );
+    if (plateau->scoreb > plateau->scoren){
+        MLV_draw_text_with_font(
+            h + 75, h/3 + 50,
+            blanc,                        /* on affiche le caractère */
+            font, MLV_rgba(255,215,0,255)
+            );
+    }
+    if (plateau->scoren > plateau->scoreb){
+        MLV_draw_text_with_font(
+            h + 75, (h/3)*2 + 50,
+            noir,                        /* on affiche le caractère */
+            font, MLV_rgba(255,215,0,255)
+            );
+    }
+}
 
 /*
 R : Permet d'afficher les pieces
@@ -32,9 +71,37 @@ void affiche_piece(int h, char x, char y, int joueur){
             MLV_draw_filled_circle(i*h/9+h/18,j*h/9+h/18,h/24,MLV_COLOR_WHITE);
         }
         if(joueur==1) MLV_draw_filled_circle(i*h/9+h/18,j*h/9+h/18,h/24,MLV_rgba(0,0,0,255)); /*si le joueur est noir*/
-        if(joueur==4) MLV_draw_filled_circle(i*h/9+h/18,j*h/9+h/18,h/48,MLV_rgba(172,172,172,255)); /*si le coup est jouable*/
+        if(joueur==4) MLV_draw_filled_circle(i*h/9+h/18,j*h/9+h/18,h/48,MLV_rgba(255,0,0,255)); /*si le coup est jouable*/
     }
     /*si les coordonnées sont incorrectes, n'affiche rien*/
+}
+
+/*
+R: Permet d'afficher le mot score
+E: hauteur
+S: rien
+*/
+
+void affiche_mot_score(int h){
+    MLV_Font* font=NULL;                             /* font initialisé a NULL */
+    int p;
+    p=40;                                   /* taille pixels */
+    font = MLV_load_font(FONT_PATH , p );   /* chargement font */
+    MLV_draw_text_with_font(
+            h + 20, h/36,
+            "score",                        /* on affiche le caractère */
+            font, MLV_rgba(225,192,152,255)
+        );
+    MLV_draw_text_with_font(
+            h + 20, h/3,
+            "blanc",                        /* on affiche le caractère */
+            font, MLV_rgba(255,255,255,255)
+        );
+    MLV_draw_text_with_font(
+        h + 45, (h/3)*2,
+            "noir",                        /* on affiche le caractère */
+            font, MLV_rgba(0,0,0,255)
+        );
 }
 
 /*
@@ -127,6 +194,7 @@ void coordonnees(int h){
     font=NULL;
 }
 
+
 /*
 R : Permet de créer la grille
 E : hauteur de la fenêtre
@@ -156,7 +224,7 @@ void background(int h){
     MLV_Image* background;
     background = MLV_load_image(PATH_IMAGE);
 
-    MLV_resize_image(background,h,h);
+    MLV_resize_image(background,h+200,h);
     MLV_draw_image(background,0,0);
 
     MLV_free_image(background);
@@ -186,6 +254,8 @@ int setMainWindow(s_plateau p){
     grille(height);     /* créer la grille*/
     coordonnees(height);    /* affiches les coordonnées */
     afficher_plateau_MLV(p,height);
+    affiche_mot_score(height); /*affiche le mot score*/
+    affiche_score(height, &p); /*On affiche le score*/
     MLV_actualise_window(); /* actualise la fenêtre */
     return height;          /* renvoie la taille de la fenêtre*/
 }
@@ -369,8 +439,8 @@ void boucle_jeu_mlv(){
     int commence=0;
     p=allocution_plateau(LIGNE,COLONNE);
     h=setMainWindow(*p);
-    choisir_joueur_mlv(p,h);/*demande au joueur la couleur qu'il veux jouer*/
-    commence=choisir_qui_commence(h);/*demande au joueur qui commence*/
+    choisir_joueur_mlv(p,h+200);/*demande au joueur la couleur qu'il veux jouer*/
+    commence=choisir_qui_commence(h+200);/*demande au joueur qui commence*/
     /*tant que le plateau n'est pas rempli*/
     if (!commence) {
         if(verifier_tour_joueur(p,p->bot)){
@@ -413,7 +483,7 @@ void jeu(){
     int height;
     height = MLV_get_desktop_height()-75; 
 
-    MLV_create_window("Réversi","Réversi",height,height); /* créer la fenêtre*/
+    MLV_create_window("Réversi","Réversi",height+200,height); /* créer la fenêtre*/
 
     boucle_jeu_mlv();
     
