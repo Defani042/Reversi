@@ -62,10 +62,4 @@ plat retourner_jetons(plat p, int x, int y, int couleur);
 
 int verifier_tour_joueur(plat p, int val);
 
-/* A déplacer */
-int plat_compter_quatre(plat p);
-
-int eval(plat p, int couleur);
-
-
 #endif /*_PLATEAU_H_*/
