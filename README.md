@@ -27,11 +27,17 @@ le code est agencer en différents modules :
    - **Gamewindow**: module de gestion de la fenêtre de jeux
    - **Plateau**: module de gestion du plateau de jeux
    - **Arbre**: module de gestion des arbres
+   - **coordonnee**: module de gestion des tableau de coordonnées
 
 le code contient les TADs suivantes :
 
    - **plat**: contenant les information relative au plateau de jeux
    - **arbre**: contenant un arbre pour calculer les possibilité du Bot 
+
+le code contient les structure suivantes :
+    - **cordonnee**: contenant les informations relatives à une coordonnées (x,y)
+    - **tab_coordonnee**: contenant un tableau de taille len de coordonnées
+
 ## Condition d'utilisation
 
 Toutes forment de distribution illégale à des fins monétaire est strictement interdites et sans l'autorisation des auteurs.
