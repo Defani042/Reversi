@@ -1,0 +1,34 @@
+#ifndef _ARBRE_H_
+#define _ARBRE_H_
+
+#include <stdio.h>
+#include <stdlib.h>
+#include "plateau.h"
+
+/*macro*/
+#define COIN 4
+#define BORD 2
+#define BASE 1
+#define DEFA 0
+#define MAUV -1
+#define DANG -2
+
+/*TAD arbre*/
+typedef struct branche{
+    int val;
+    int nb_fils; 
+    struct branche **branches;
+}branche;
+typedef struct branche* arbre;
+
+arbre creer_arbre_vide();
+
+int est_arbre_vide(arbre a);
+
+arbre creer_arbre(int p,int nb_fils);
+
+arbre ajouter_branche(arbre a, arbre f);
+
+int eval(plat p, int couleur);
+
+#endif /*_ARBRE_H_*/

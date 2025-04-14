@@ -53,7 +53,7 @@ plat allocution_plateau(int l,int c){
   
   /*allocution d'un TAD plat*/
   if((p = (plat)malloc(sizeof(s_plateau)))==NULL){
-    printf("erreur malloc \n");
+    printf("erreur malloc par la fonction allocution_plateau()\n");
     exit(EXIT_FAILURE);
   }
   
@@ -62,15 +62,15 @@ plat allocution_plateau(int l,int c){
   p->c=c;
   
   /*allocution des lignes de la matrice*/
-  if((p->mat = (int**)calloc(l,sizeof(int*)))==NULL){
-    printf("erreur calloc \n");
+  if((p->mat = (int**)malloc(l*sizeof(int*)))==NULL){
+    printf("erreur malloc par la fonction allocution_plateau()\n");
     exit(EXIT_FAILURE);
   }
   
   /*alloction des colonnes de la matrice*/
   for(i=0;i<l;i++){
     if((p->mat[i] = (int*)calloc(c,sizeof(int)))==NULL){
-      printf("erreur calloc \n");
+      printf("erreur calloc par la fonction allocution_plateau()\n");
       exit(EXIT_FAILURE);
     }
   }
@@ -95,18 +95,18 @@ S: vide
 */
 
 void liberer_plateau(plat p){
-  int i;
-  /*liberation des colonnes de la matrice*/
-  for(i=0;i<p->c;i++){
-    free(p->mat[i]);
-    p->mat[i]=NULL;
-  }
-  /*liberation des lignes de la matrice*/
-  free(p->mat);
-  p->mat=NULL;
-  /*liberation des colonne de la matrice*/
-  free(p);
-  p=NULL;
+    int i;
+    /*liberation des colonnes de la matrice*/
+    for(i=0;i<p->c;i++){
+        free(p->mat[i]);
+        p->mat[i]=NULL;
+    }
+    /*liberation des lignes de la matrice*/
+    free(p->mat);
+    p->mat=NULL;
+    /*liberation des colonne de la matrice*/
+    free(p);
+    p=NULL;
   
 
 }
@@ -574,6 +574,21 @@ void fin_jeux(plat p){
 }
 
 /*
+R: demande au joueur s'il veux commencer a jouer
+E: rien
+S: un bool(int de 0 ou 1)
+*/
+
+int taper_qui_commence(){
+    char commence = '0';
+    printf("Voulez-vous commencer O/n :\n");
+    if (scanf("%c",&commence )!=1) commence = 0;
+    vider_buffer();
+    if (commence == 'O') return  1;
+    else return 0;
+}
+
+/*
 R: gestion de la boucle de jeu sur le terminale
 E: vide
 S: vide
@@ -584,6 +599,11 @@ void boucle_jeu_terminal(){
   plat p;
   p=allocution_plateau(LIGNE,COLONNE);
   choisir_joueur(p);/*demande au joueur la couleur qu'il veux jouer*/
+  if (!taper_qui_commence()){
+      if(verifier_tour_joueur(p,p->bot)){
+        coup_ordinateur(p); /*le bot joue*/
+      } /*si le joueur commence pas, alors le bot joue*/
+  }
   /*tant que le plateau n'est pas rempli*/
   while(verifier_tour_joueur(p,p->joueur) || verifier_tour_joueur(p,p->bot)){
     printf("\033[H\033[J");/*clear le terminal*/

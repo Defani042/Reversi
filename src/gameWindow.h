@@ -34,6 +34,10 @@ void affichage_choix_joueur(int h);
 
 void choisir_joueur_mlv(plat p,int h);
 
+void affichage_qui_commence(int h);
+
+int choisir_qui_commence(int h);
+
 void boucle_jeu_mlv();
 
 void jeu();
