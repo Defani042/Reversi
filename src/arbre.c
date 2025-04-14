@@ -42,6 +42,9 @@ arbre creer_arbre(int p,int nb_fils){
     }
     /*on set nb_fils*/
     a->nb_fils = nb_fils;
+    /*On set les coordonnées*/
+    a->coord.x = -1;
+    a->coord.y = -1;
     /*on set toute les branches à NULL*/
     for(i=0;i<nb_fils;i++){
         a->branches[i] = NULL;
@@ -123,7 +126,165 @@ int eval(plat p, int couleur){
   return score;
 }
 
+/*
+R: Renvoie une feuille contenant la valeur évaluée du plateau simulé 
+E: 1 TAD plat et la couleur
+S: La feuille de l'arbre
+*/
 
+arbre simuler_coup_prof_0(plat p, int couleur){
+    return creer_arbre(eval(p, couleur), 0);
+}
 
+/*
+R: Renvoie un arbre contenant la valeur évaluée du plateau simulé la plus élevée
+E: 1 TAD plat et la couleur
+S: Un arbre intermédiaire
+*/
+arbre simuler_coup_prof_1(plat p, int couleur){
+    arbre a;
+    int nbfils;
+    int x,y,n,x_max,y_max;
+    plat tmp = NULL;
+    tab_coordonnee tc;
+    int max = -999;
+
+    x_max = max;
+    y_max = max;
+    nbfils = plat_compter_quatre(p);
+    tc = creer_coord(nbfils);
+    a = creer_arbre(-999, nbfils);
+    tmp = allocution_plateau(LIGNE, COLONNE);
+    
+    for (n=0;n<nbfils;n++){
+        tmp = p;
+        x = tc.tab[n].x;
+        y = tc.tab[n].y;
+        if (set_case_plateau(x,y,couleur,tmp) != 1){
+            printf("Cas impossible, s'inquiéter si ce message apparait\n");
+        }
+        a->branches[n] = simuler_coup_prof_0(tmp, (couleur%2)+1);
+        if (max <= a->branches[n]->val){
+            if (max == a->branches[n]->val){
+                if (rand()%2){
+                max = a->branches[n]->val;
+                x_max = x;
+                y_max = y;    
+                }
+            }
+            else{
+                max = a->branches[n]->val;
+                x_max = x;
+                y_max = y;
+            }
+        }
+    }
+    a->coord.x = x_max;
+    a->coord.y = y_max;
+    a->val = max;
+    liberer_plateau(tmp);
+    tmp = NULL;
+    return a;
+}
+
+/*
+R: Renvoie un arbre contenant la valeur évaluée du plateau simulé la plus faible
+E: 1 TAD plat et la couleur
+S: La racine de l'arbre
+*/
+arbre simuler_coup_prof_2(plat p, int couleur){
+    arbre a;
+    int nbfils;
+    int x,y,n, x_min, y_min;
+    plat tmp = NULL;
+    tab_coordonnee tc;
+    int min = 999;
+
+    x_min = min;
+    y_min = min;
+    nbfils = plat_compter_quatre(p);
+    tc = creer_coord(nbfils);
+    a = creer_arbre(-999, nbfils);
+    tmp = allocution_plateau(LIGNE, COLONNE);
+    
+    for (n=0;n<nbfils;n++){
+        tmp = p;
+        x = tc.tab[n].x;
+        y = tc.tab[n].y;
+        if (set_case_plateau(x,y,couleur,tmp) != 1){
+            printf("Cas impossible, s'inquiéter si ce message apparait\n");
+        }
+        a->branches[n] = simuler_coup_prof_1(tmp,(couleur%2)+1);
+        if (min >= a->branches[n]->val){
+            if (min == a->branches[n]->val){
+                if (rand()%2){
+                    min = a->branches[n]->val;
+                    x_min = x;
+                    y_min = y;
+                }
+            }
+            else{
+            min = a->branches[n]->val;
+            x_min = x;
+            y_min = y;
+            }
+        }
+    }
+    a->coord.x = x_min;
+    a->coord.y = y_min;
+    a->val = min;
+    liberer_plateau(tmp);
+    tmp = NULL;
+    return a;
+}
+
+/*
+R: Joue le prochain coup en fonction de plateau simulés
+E: 1 TAD plat et la couleur
+S: Rien
+*/
+void simuler_coup_etape_3(plat p, int couleur){
+    arbre a;
+    a = simuler_coup_prof_2(p, couleur);
+    set_case_plateau(a->coord.x,a->coord.y,couleur,p);
+    liberer_arbre(a);
+    a = NULL;
+}
+
+/*
+R: Permet de jouer avec une IA de niveau étape 3
+E: Aucun
+S: Rien
+*/
+
+void boucle_jeu_etape_3(){
+  /*création et allocution du plateau*/
+  plat p;
+  p=allocution_plateau(LIGNE,COLONNE);
+  choisir_joueur(p);/*demande au joueur la couleur qu'il veux jouer*/
+  if (!taper_qui_commence()){
+      if(verifier_tour_joueur(p,p->bot)){
+        coup_ordinateur(p); /*le bot joue*/
+      } /*si le joueur commence pas, alors le bot joue*/
+  }
+  /*tant que le plateau n'est pas rempli*/
+  while(verifier_tour_joueur(p,p->joueur) || verifier_tour_joueur(p,p->bot)){
+    printf("\033[H\033[J");/*clear le terminal*/
+    p=liste_coup_valide(p,p->joueur); /*on affiche les coups valides*/
+    afficher_plateau(p);/*on affiche le plateau*/
+    if(verifier_tour_joueur(p,p->joueur)){
+       saisir_coup(p);/*on demande un coup a l'utilisateur*/  
+    }
+    p=plat_supprimer_quatre(p); /*on efface les coups jouables pour le joueur*/
+    if(verifier_tour_joueur(p,p->bot)){
+        simuler_coup_etape_3(p, p->bot); /*le bot joue*/
+    }
+    calculer_score(p);/*on calcule le score*/
+  }
+  fin_jeux(p);
+  liberer_plateau(p);
+  printf("fin de partie\n");
+ 
+}
 
 #endif /*_ARBRE_C_*/

@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "plateau.h"
+#include "coordonnee.h"
 
 /*macro*/
 #define COIN 4
@@ -16,7 +17,8 @@
 /*TAD arbre*/
 typedef struct branche{
     int val;
-    int nb_fils; 
+    int nb_fils;
+    coordonnee coord;
     struct branche **branches;
 }branche;
 typedef struct branche* arbre;
@@ -29,6 +31,17 @@ arbre creer_arbre(int p,int nb_fils);
 
 arbre ajouter_branche(arbre a, arbre f);
 
+void liberer_arbre(arbre a);
+
 int eval(plat p, int couleur);
 
+arbre simuler_coup_prof_0(plat p, int couleur);
+
+arbre simuler_coup_prof_1(plat p, int couleur);
+
+arbre simuler_coup_prof_2(plat p, int couleur);
+
+void simuler_coup_etape_3(plat p, int couleur);
+
+void boucle_jeu_etape_3();
 #endif /*_ARBRE_H_*/
