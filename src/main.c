@@ -41,7 +41,7 @@ int main(int argc,char*argv[]){
     int val,index=-1;/*entiers relatifs aux fonctions de getopt.h*/
     int terminal=0,h=1,r=1,niveau=4,profondeur=0;/*entiers relatifs aux options*/
     
-    const char* optstring=":htrn:";
+    const char* optstring=":htrn:p:";
     const struct option lopts[] = {
         {"help", 0, NULL, 'h'},
         {"terminal", 0, NULL, 't'},
