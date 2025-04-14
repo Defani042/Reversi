@@ -204,7 +204,7 @@ arbre simuler_coup_prof_2(plat p, int couleur){
     y_min = min;
     nbfils = plat_compter_quatre(p);
     tc = creer_coord(nbfils);
-    a = creer_arbre(-999, nbfils);
+    a = creer_arbre(999, nbfils);
     tmp = allocution_plateau(LIGNE, COLONNE);
     
     for (n=0;n<nbfils;n++){
