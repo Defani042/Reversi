@@ -574,6 +574,21 @@ void fin_jeux(plat p){
 }
 
 /*
+R: demande au joueur s'il veux commencer a jouer
+E: rien
+S: un bool(int de 0 ou 1)
+*/
+
+int taper_qui_commence(){
+    char commence = '0';
+    printf("Voulez-vous commencer O/n :\n");
+    if (scanf("%c",&commence )!=1) commence = 0;
+    vider_buffer();
+    if (commence == 'O') return  1;
+    else return 0;
+}
+
+/*
 R: gestion de la boucle de jeu sur le terminale
 E: vide
 S: vide
@@ -584,6 +599,11 @@ void boucle_jeu_terminal(){
   plat p;
   p=allocution_plateau(LIGNE,COLONNE);
   choisir_joueur(p);/*demande au joueur la couleur qu'il veux jouer*/
+  if (!taper_qui_commence()){
+      if(verifier_tour_joueur(p,p->bot)){
+        coup_ordinateur(p); /*le bot joue*/
+      } /*si le joueur commence pas, alors le bot joue*/
+  }
   /*tant que le plateau n'est pas rempli*/
   while(verifier_tour_joueur(p,p->joueur) || verifier_tour_joueur(p,p->bot)){
     printf("\033[H\033[J");/*clear le terminal*/

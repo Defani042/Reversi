@@ -34,11 +34,12 @@ void aide(char *s){
     printf("%s --terminal : Permet de jouer sur le terminal.\n\n",s);
     printf("%s --regles : Permet d'afficher les règles du jeu.\n\n",s);
     printf("%s --niveau val(de 0 à 4) : Choisit la difficulté, par default 2.\n\n",s);
+    printf("%s --prof val(<0) : Choisit la profondeur de l'arbre pour l'ordinateur pour un difficulté personalisée.\n\n",s);
 }
 
 int main(int argc,char*argv[]){
     int val,index=-1;/*entiers relatifs aux fonctions de getopt.h*/
-    int terminal=0,h=1,r=1,niveau=2;/*entiers relatifs aux options*/
+    int terminal=0,h=1,r=1,niveau=2,profondeur=0;/*entiers relatifs aux options*/
     
     const char* optstring=":htrn:";
     const struct option lopts[] = {
@@ -46,6 +47,7 @@ int main(int argc,char*argv[]){
         {"terminal", 0, NULL, 't'},
         {"regle", 0, NULL, 'r'},
         {"niveau", 1, NULL, 'n'},
+        {"prof", 1, NULL, 'p'},
         {NULL, 0 , NULL , 0}
     };
 
@@ -59,6 +61,12 @@ int main(int argc,char*argv[]){
                 if (niveau < 0) niveau *= -1;
                 niveau = niveau%5;
                 printf("Le niveau de difficulté a été réglé à %d.\n",niveau);
+                break;
+        }
+        case 'p' : {profondeur = atoi(optarg);
+                if (profondeur < 0) profondeur *= -1;
+                profondeur = profondeur%60;
+                printf("La profondeur a été réglé à %d.\n",profondeur);
                 break;
         }
         case ':' : printf("Argument manquant pour --%c, niveau par defaut utilisé (2).\n",optopt);break;

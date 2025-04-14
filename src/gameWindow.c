@@ -263,7 +263,7 @@ void saisir_coup_mlv(plat p,int h) {
 
 /*
 R : permet d'afficher le choix des couleurs
-E : vide
+E : taille ecran
 S : vide
 */
 
@@ -287,7 +287,7 @@ void affichage_choix_joueur(int h){
 
 /*
 R : permet de choisir la couleur
-E : vide
+E : plateau et hauteur de l'écran
 S : vide
 */
 
@@ -306,6 +306,57 @@ void choisir_joueur_mlv(plat p,int h){
 }
 
 /*
+R : permet d'afficher le choix des couleurs
+E : taille ecran
+S : vide
+*/
+
+void affichage_qui_commence(int h){
+    MLV_Font* font=NULL;                             /* font initialisé a NULL */
+    int p;
+    p=25;                                   /* taille pixels */
+    font = MLV_load_font(FONT_PATH , p );   /* chargement font */
+    MLV_draw_filled_rectangle(0,0,h/2,h,MLV_COLOR_RED);
+    MLV_draw_filled_rectangle(h/2,0,h/2,h,MLV_COLOR_GREEN);
+    MLV_draw_text_with_font(
+        0, 30,
+        "Voulez-vous commencer",                        /* on affiche le caractère */
+        font, MLV_rgba(255,255,255,255)
+    );
+    MLV_draw_text_with_font(
+        h/4, h/2,
+        "NON",                        /* on affiche le caractère */
+        font, MLV_rgba(255,255,255,255)
+    );
+    MLV_draw_text_with_font(
+        (h/4)*3, h/2,
+        "OUI",                        /* on affiche le caractère */
+        font, MLV_rgba(255,255,255,255)
+    );
+    MLV_actualise_window();
+    MLV_free_font(font);
+    font=NULL;
+}
+
+/*
+R : permet de choisir qui commence
+E : plateau et hauteur de l'écran
+S : un bool(int de 0 ou 1)
+*/
+
+int choisir_qui_commence(int h){
+    int x,y;
+    affichage_qui_commence(h);
+    MLV_wait_mouse(&x,&y);
+    if(x<h/2) {       
+        return 0;
+    }
+    else{
+        return 1;
+    }
+}
+
+/*
 R: gestion de la boucle de jeu sur mlv
 E: vide
 S: vide
@@ -315,10 +366,21 @@ void boucle_jeu_mlv(){
     /*création et allocution du plateau*/
     int h;
     plat p;
+    int commence=0;
     p=allocution_plateau(LIGNE,COLONNE);
     h=setMainWindow(*p);
     choisir_joueur_mlv(p,h);/*demande au joueur la couleur qu'il veux jouer*/
+    commence=choisir_qui_commence(h);/*demande au joueur qui commence*/
     /*tant que le plateau n'est pas rempli*/
+    if (!commence) {
+        if(verifier_tour_joueur(p,p->bot)){
+          h=setMainWindow(*p);
+          MLV_wait_milliseconds(500);
+          coup_ordinateur(p); /*le bot joue*/
+      }
+      p=plat_supprimer_quatre(p); /*on efface les coups jouables pour le joueur*/
+      calculer_score(p);/*on calcule le score*/
+    }
     while(verifier_tour_joueur(p,p->joueur) || verifier_tour_joueur(p,p->bot)){
       p=liste_coup_valide(p,p->joueur); /*on affiche les coups valides*/
       h=setMainWindow(*p);

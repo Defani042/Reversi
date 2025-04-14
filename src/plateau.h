@@ -38,10 +38,6 @@ int set_case_plateau(int x,int y,int val,plat p);
 
 void saisir_coup(plat p);
 
-void fin_jeux(plat p);
-
-void boucle_jeu_terminal();
-
 int coup_valide(plat p, int x, int y, int couleur);
 
 int position_gagnante(plat p, int couleur);
@@ -55,6 +51,12 @@ plat plat_supprimer_quatre(plat p);
 plat retourner_jetons(plat p, int x, int y, int couleur);
 
 int verifier_tour_joueur(plat p, int val);
+
+void fin_jeux(plat p);
+
+int taper_qui_commence();
+
+void boucle_jeu_terminal();
 
 
 #endif /*_PLATEAU_H_*/
