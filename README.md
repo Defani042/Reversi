@@ -26,11 +26,12 @@ le code est agencer en différents modules :
    - **Main**: le module principale
    - **Gamewindow**: module de gestion de la fenêtre de jeux
    - **Plateau**: module de gestion du plateau de jeux
+   - **Arbre**: module de gestion des arbres
 
-le code contient les structure suivantes :
+le code contient les TADs suivantes :
 
-   - **plat**:contenant les information relative au plateau de jeux
-
+   - **plat**: contenant les information relative au plateau de jeux
+   - **arbre**: contenant un arbre pour calculer les possibilité du Bot 
 ## Condition d'utilisation
 
 Toutes forment de distribution illégale à des fins monétaire est strictement interdites et sans l'autorisation des auteurs.
