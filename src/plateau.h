@@ -8,6 +8,12 @@
 /*Macro*/
 #define LIGNE 8
 #define COLONNE 8
+#define COIN 4
+#define BORD 2
+#define BASE 1
+#define DEFA 0
+#define MAUV -1
+#define DANG -2
 
 /*TAD plateau*/
 typedef struct{
@@ -55,6 +61,11 @@ plat plat_supprimer_quatre(plat p);
 plat retourner_jetons(plat p, int x, int y, int couleur);
 
 int verifier_tour_joueur(plat p, int val);
+
+/* A déplacer */
+int plat_compter_quatre(plat p);
+
+int eval(plat p, int couleur);
 
 
 #endif /*_PLATEAU_H_*/

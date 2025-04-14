@@ -461,6 +461,23 @@ plat plat_supprimer_quatre(plat p){
 }
 
 /*
+R: permet de compter les coups possibles
+E: 1 TAD plat
+S: Le nombre de coup possibles
+*/
+int plat_compter_quatre(plat p){
+    int x,y,score=0;
+    for (x=0;x<p->l;x++){
+    for (y = 0; y < p->c; y++){
+      if (p->mat[x][y] == 4){
+          score++;
+      }
+    }
+  } 
+  return score;
+}
+
+/*
 R: Retourne les jetons entourés
 E: 1 TAD plat, la coordonnée x et y du coup joué et la couleur.
 S: Le TAD plat modifié
@@ -523,15 +540,17 @@ plat retourner_jetons(plat p, int x, int y, int couleur){
 
 int eval(plat p, int couleur){
   int x, y, score=0;
-  int mat_eval[8][8] = {
-    {3,1,1,1,1,1,1,3},
-    {1,1,1,1,1,1,1,1},
-    {1,1,1,1,1,1,1,1},
-    {1,1,1,1,1,1,1,1},
-    {1,1,1,1,1,1,1,1},
-    {1,1,1,1,1,1,1,1},
-    {1,1,1,1,1,1,1,1},
-    {3,1,1,1,1,1,1,3}};
+  int mat_eval[LIGNE][COLONNE] = {
+      {COIN,BORD,BORD,BORD,BORD,BORD,BORD,COIN},
+      {BORD,DANG,MAUV,MAUV,MAUV,MAUV,DANG,BORD},
+      {BORD,MAUV,BASE,BASE,BASE,BASE,MAUV,BORD},
+      {BORD,MAUV,BASE,DEFA,DEFA,BASE,MAUV,BORD},
+      {BORD,MAUV,BASE,DEFA,DEFA,BASE,MAUV,BORD},
+      {BORD,MAUV,BASE,BASE,BASE,BASE,MAUV,BORD},
+      {BORD,DANG,MAUV,MAUV,MAUV,MAUV,DANG,BORD},
+      {COIN,BORD,BORD,BORD,BORD,BORD,BORD,COIN}
+  };
+  
   for (x=0;x<p->l;x++){
     for (y=0;y<p->c;y++){
       if (p->mat[x][y] == couleur){
