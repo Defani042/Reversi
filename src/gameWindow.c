@@ -61,17 +61,34 @@ S : rien
 
 void affiche_piece(int h, char x, char y, int joueur){
     int i,j;
-
+    int rayon;
+    MLV_Color couleur_pion;
+    MLV_Color ombre;
+    MLV_Color highlight;
     if ((x >= 'A' || x <= 'H') && (y >= '0' || y <= '7')){ /*si les coordonnées sont coorectes*/
 
         i = x-'A'+1;      /*Converti la lettre pour l'affichage*/
         j = y-'0'+1;        /*Converti la lettre pour l'affichage*/
 
         if(joueur==2){ /*Si le joueur est blanc*/
-            MLV_draw_filled_circle(i*h/9+h/18,j*h/9+h/18,h/24,MLV_COLOR_WHITE);
+            couleur_pion = MLV_rgba(215,215,215,255);
+            ombre = MLV_COLOR_LIGHT_GREY;
+            highlight = MLV_rgba(235, 235, 235, 190);
         }
-        if(joueur==1) MLV_draw_filled_circle(i*h/9+h/18,j*h/9+h/18,h/24,MLV_rgba(0,0,0,255)); /*si le joueur est noir*/
+        if(joueur==1){
+            couleur_pion = MLV_COLOR_BLACK;
+            ombre = MLV_COLOR_DARK_GREY;
+            highlight = MLV_rgba(80, 80, 80, 80); /*si le joueur est noir*/
+        }
         if(joueur==4) MLV_draw_filled_circle(i*h/9+h/18,j*h/9+h/18,h/48,MLV_rgba(255,0,0,255)); /*si le coup est jouable*/
+
+        if (joueur==1 || joueur==2){
+            rayon = h/24;
+            MLV_draw_filled_circle(i*h/9+h/18 + 3, j*h/9+h/18 + 3, rayon, ombre);
+            MLV_draw_filled_circle(i*h/9+h/18, j*h/9+h/18, rayon, couleur_pion); /*Affiche le corps du pion*/
+            MLV_draw_filled_circle(i*h/9+h/18 - rayon / 3, j*h/9+h/18 - rayon / 3, rayon / 3, highlight); /*Affiche le reflet du pion*/
+            MLV_draw_circle(i*h/9+h/18, j*h/9+h/18, rayon, MLV_COLOR_GREY);
+        }
     }
     /*si les coordonnées sont incorrectes, n'affiche rien*/
 }
