@@ -80,7 +80,7 @@ void affiche_piece(int h, char x, char y, int joueur){
             ombre = MLV_COLOR_DARK_GREY;
             highlight = MLV_rgba(80, 80, 80, 80); /*si le joueur est noir*/
         }
-        if(joueur==4) MLV_draw_filled_circle(i*h/9+h/18,j*h/9+h/18,h/48,MLV_rgba(255,0,0,255)); /*si le coup est jouable*/
+        if(joueur==4) MLV_draw_filled_circle(i*h/9+h/18, j*h/9+h/18,h/48,MLV_rgba(255,0,0,255)); /*si le coup est jouable*/
 
         if (joueur==1 || joueur==2){
             rayon = h/24;
