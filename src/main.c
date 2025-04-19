@@ -78,18 +78,15 @@ int main(int argc,char*argv[]){
     }
 
     if(h && r){printf("Aide : %s --help\n",argv[0]);
-
+    }
         /*Test MainWindows*/
-        
+    if (terminal){
         switch(niveau){
             case 1 : boucle_jeu_etape_3();break;
-            default : {
-                if (terminal) boucle_jeu_terminal();
-                else jeu();
-                break;
-            }
+            default : boucle_jeu_terminal();break;
         }
     }
+    else jeu(niveau);
     exit(EXIT_SUCCESS);
 }
   
