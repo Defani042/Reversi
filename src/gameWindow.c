@@ -84,7 +84,7 @@ void affiche_piece(int h, char x, char y, int joueur){
 
         if (joueur==1 || joueur==2){
             rayon = h/24;
-            MLV_draw_filled_circle(i*h/9+h/18 + 3, j*h/9+h/18 + 3, rayon, ombre);
+            MLV_draw_filled_circle(i*h/9+h/18 + 3, j*h/9+h/18 + 3, rayon, ombre); /*Affiche l'ombre du pion*/
             MLV_draw_filled_circle(i*h/9+h/18, j*h/9+h/18, rayon, couleur_pion); /*Affiche le corps du pion*/
             MLV_draw_filled_circle(i*h/9+h/18 - rayon / 3, j*h/9+h/18 - rayon / 3, rayon / 3, highlight); /*Affiche le reflet du pion*/
             MLV_draw_circle(i*h/9+h/18, j*h/9+h/18, rayon, MLV_COLOR_GREY);
