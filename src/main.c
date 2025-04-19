@@ -60,7 +60,7 @@ int main(int argc,char*argv[]){
         case 'n' : {niveau = atoi(optarg);
                 if (niveau < 0) niveau *= -1;
                 niveau = niveau%5;
-                printf("Le niveau de létape est %d.\n",niveau);
+                printf("Le niveau de l'étape est %d (%d de l'énoncé).\n",niveau,niveau+3);
                 break;
         }
         case 'p' : {profondeur = atoi(optarg);
@@ -79,6 +79,9 @@ int main(int argc,char*argv[]){
     if(h && r){printf("Aide : %s --help\n",argv[0]);
 
         /*Test MainWindows*/
+        if (niveau == 0 ){
+            
+        }
         if(terminal) boucle_jeu_terminal();
         else jeu();
     }
