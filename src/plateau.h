@@ -64,4 +64,6 @@ int taper_qui_commence();
 
 void boucle_jeu_terminal();
 
+int  pltcpy(plat p, plat pc);
+
 #endif /*_PLATEAU_H_*/

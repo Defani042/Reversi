@@ -13,6 +13,7 @@
 /*librairie local*/
 #include "gameWindow.h"
 #include "plateau.h"
+#include "arbre.h"
 
 void regles(){
     printf("Règles du reversi : \n");
@@ -33,13 +34,13 @@ void aide(char *s){
     printf("%s : Permet de jouer sur une fenêtre.\n\n",s);
     printf("%s --terminal : Permet de jouer sur le terminal.\n\n",s);
     printf("%s --regles : Permet d'afficher les règles du jeu.\n\n",s);
-    printf("%s --niveau val(de 0 à 4) : Choisit l'étape, par default 4.\n\n",s);
+    printf("%s --niveau val(de 0 à 5) : Choisit l'étape, par default 0.\n0: IA aléaoire\nDe 1 à 4 : étapes 3 à 6 de l'énoncé du projet\n\n",s);
     printf("%s --prof val(<0) : Choisit la profondeur de l'arbre pour l'ordinateur pour un difficulté personalisée.\n\n",s);
 }
 
 int main(int argc,char*argv[]){
     int val,index=-1;/*entiers relatifs aux fonctions de getopt.h*/
-    int terminal=0,h=1,r=1,niveau=4,profondeur=0;/*entiers relatifs aux options*/
+    int terminal=0,h=1,r=1,niveau=2,profondeur=0;/*entiers relatifs aux options*/
     
     const char* optstring=":htrn:p:";
     const struct option lopts[] = {
@@ -60,7 +61,7 @@ int main(int argc,char*argv[]){
         case 'n' : {niveau = atoi(optarg);
                 if (niveau < 0) niveau *= -1;
                 niveau = niveau%5;
-                printf("Le niveau de létape est %d.\n",niveau);
+                printf("Le niveau de l'étape est %d.\n",niveau);
                 break;
         }
         case 'p' : {profondeur = atoi(optarg);
@@ -69,7 +70,7 @@ int main(int argc,char*argv[]){
                 printf("La profondeur a été réglé à %d.\n",profondeur);
                 break;
         }
-        case ':' : printf("Argument manquant pour --%c, niveau par defaut utilisé (2).\n",optopt);break;
+        case ':' : printf("Argument manquant pour --%c, niveau par defaut utilisé (0).\n",optopt);break;
         case '?' : printf("Option inexistante.\n");break;
         }
         index=-1;
@@ -77,11 +78,15 @@ int main(int argc,char*argv[]){
     }
 
     if(h && r){printf("Aide : %s --help\n",argv[0]);
-
-        /*Test MainWindows*/
-        if(terminal) boucle_jeu_terminal();
-        else jeu();
     }
+        /*Test MainWindows*/
+    if (terminal){
+        switch(niveau){
+            case 1 : boucle_jeu_etape_3();break;
+            default : boucle_jeu_terminal();break;
+        }
+    }
+    else jeu(niveau);
     exit(EXIT_SUCCESS);
 }
   

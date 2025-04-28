@@ -40,7 +40,7 @@ int choisir_qui_commence(int h);
 
 void boucle_jeu_mlv();
 
-void jeu();
+void jeu(int n);
 
 
 #endif /*_GAMEWINDOW_H_*/

@@ -624,5 +624,27 @@ void boucle_jeu_terminal(){
  
 }
 
+/*
+R: Créer une copie d'un plateau
+E: Plateau, Copie_plateau
+S: Entier d'erreur(0) ou de reussite(1)
+*/
+
+int  pltcpy(plat p, plat pc){
+  int a,b;
+  if(pc==NULL) pc=allocution_plateau(LIGNE,COLONNE);
+  if ((pc->l!=p->l) || (pc->c != p->c)) return 0;
+  for (a=0;a<pc->l;a++){
+    for (b=0;b<p->c;b++){
+      pc->mat[a][b]=p->mat[a][b];
+    }
+  }
+  pc->joueur=p->joueur;
+  pc->bot=p->bot;
+  pc->scoren=p->scoren;
+  pc->scoreb=p->scoreb;
+  return 1;
+}
+
 
 #endif /*_PLATEAU_C_*/

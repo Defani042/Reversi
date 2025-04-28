@@ -144,46 +144,51 @@ S: Un arbre intermédiaire
 arbre simuler_coup_prof_1(plat p, int couleur){
     arbre a;
     int nbfils;
-    int x,y,n,x_max,y_max;
+    int x,y,n,x_min,y_min;
     plat tmp = NULL;
     tab_coordonnee tc;
-    int max = -999;
+    int min = 999;
 
-    x_max = max;
-    y_max = max;
+    x_min = min;
+    y_min = min;
     nbfils = plat_compter_quatre(p);
-    tc = creer_coord(nbfils);
-    a = creer_arbre(max, nbfils);
+    tc = recup_coup_valide(p);
+    a = creer_arbre(min, nbfils);
     tmp = allocution_plateau(LIGNE, COLONNE);
     
     for (n=0;n<nbfils;n++){
-        tmp = p;
+        pltcpy(p, tmp);
+        afficher_mat(p);
         x = tc.tab[n].x;
         y = tc.tab[n].y;
         if (set_case_plateau(x,y,couleur,tmp) != 1){
-            printf("Cas impossible, s'inquiéter si ce message apparait\n");
+            printf("Cas impossible, s'inquiéter si ce message apparait(1)\n");
         }
+        tmp=retourner_jetons(tmp,x,y,couleur);
+        tmp=plat_supprimer_quatre(tmp);
+        tmp=liste_coup_valide(tmp, couleur);
         a->branches[n] = simuler_coup_prof_0(tmp, (couleur%2)+1);
-        if (max <= a->branches[n]->val){
-            if (max == a->branches[n]->val){
+        if (min >= a->branches[n]->val){
+            if (min == a->branches[n]->val){
                 if (rand()%2){
-                max = a->branches[n]->val;
-                x_max = x;
-                y_max = y;    
+                min = a->branches[n]->val;
+                x_min = x;
+                y_min = y;    
                 }
             }
             else{
-                max = a->branches[n]->val;
-                x_max = x;
-                y_max = y;
+                min = a->branches[n]->val;
+                x_min = x;
+                y_min = y;
             }
         }
     }
-    a->coord.x = x_max;
-    a->coord.y = y_max;
-    a->val = max;
+    a->coord.x = x_min;
+    a->coord.y = y_min;
+    a->val = min;
     liberer_plateau(tmp);
     tmp = NULL;
+    liberer_tab_coord(tc);
     return a;
 }
 
@@ -195,46 +200,50 @@ S: La racine de l'arbre
 arbre simuler_coup_prof_2(plat p, int couleur){
     arbre a;
     int nbfils;
-    int x,y,n, x_min, y_min;
+    int x,y,n, x_max, y_max;
     plat tmp = NULL;
     tab_coordonnee tc;
-    int min = 999;
+    int max = -999;
 
-    x_min = min;
-    y_min = min;
+    x_max = max;
+    y_max = max;
     nbfils = plat_compter_quatre(p);
-    tc = creer_coord(nbfils);
-    a = creer_arbre(min, nbfils);
+    tc = recup_coup_valide(p);
+    a = creer_arbre(max, nbfils);
     tmp = allocution_plateau(LIGNE, COLONNE);
     
     for (n=0;n<nbfils;n++){
-        tmp = p;
+        pltcpy(p, tmp);
         x = tc.tab[n].x;
         y = tc.tab[n].y;
         if (set_case_plateau(x,y,couleur,tmp) != 1){
-            printf("Cas impossible, s'inquiéter si ce message apparait\n");
+            printf("Cas impossible, s'inquiéter si ce message apparait(2)\n");
         }
+        tmp=retourner_jetons(tmp,x,y,couleur);
+        tmp=plat_supprimer_quatre(tmp);
+        tmp=liste_coup_valide(tmp, couleur);
         a->branches[n] = simuler_coup_prof_1(tmp,(couleur%2)+1);
-        if (min >= a->branches[n]->val){
-            if (min == a->branches[n]->val){
+        if (max <= a->branches[n]->val){
+            if (max == a->branches[n]->val){
                 if (rand()%2){
-                    min = a->branches[n]->val;
-                    x_min = x;
-                    y_min = y;
+                    max = a->branches[n]->val;
+                    x_max = x;
+                    y_max = y;
                 }
             }
             else{
-            min = a->branches[n]->val;
-            x_min = x;
-            y_min = y;
+            max = a->branches[n]->val;
+            x_max = x;
+            y_max = y;
             }
         }
     }
-    a->coord.x = x_min;
-    a->coord.y = y_min;
-    a->val = min;
+    a->coord.x = x_max;
+    a->coord.y = y_max;
+    a->val = max;
     liberer_plateau(tmp);
     tmp = NULL;
+    liberer_tab_coord(tc);
     return a;
 }
 
@@ -247,6 +256,8 @@ void simuler_coup_etape_3(plat p, int couleur){
     arbre a;
     a = simuler_coup_prof_2(p, couleur);
     set_case_plateau(a->coord.x,a->coord.y,couleur,p);
+    p=retourner_jetons(p,a->coord.x,a->coord.y,couleur);
+    p=plat_supprimer_quatre(p);
     liberer_arbre(a);
     a = NULL;
 }
@@ -264,7 +275,7 @@ void boucle_jeu_etape_3(){
   choisir_joueur(p);/*demande au joueur la couleur qu'il veux jouer*/
   if (!taper_qui_commence()){
       if(verifier_tour_joueur(p,p->bot)){
-        coup_ordinateur(p); /*le bot joue*/
+        simuler_coup_etape_3(p, p->bot); /*le bot joue*/
       } /*si le joueur commence pas, alors le bot joue*/
   }
   /*tant que le plateau n'est pas rempli*/
