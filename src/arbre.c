@@ -153,7 +153,7 @@ arbre simuler_coup_prof_1(plat p, int couleur){
     y_max = max;
     nbfils = plat_compter_quatre(p);
     tc = creer_coord(nbfils);
-    a = creer_arbre(-999, nbfils);
+    a = creer_arbre(max, nbfils);
     tmp = allocution_plateau(LIGNE, COLONNE);
     
     for (n=0;n<nbfils;n++){
@@ -204,7 +204,7 @@ arbre simuler_coup_prof_2(plat p, int couleur){
     y_min = min;
     nbfils = plat_compter_quatre(p);
     tc = creer_coord(nbfils);
-    a = creer_arbre(999, nbfils);
+    a = creer_arbre(min, nbfils);
     tmp = allocution_plateau(LIGNE, COLONNE);
     
     for (n=0;n<nbfils;n++){
@@ -285,6 +285,30 @@ void boucle_jeu_etape_3(){
   liberer_plateau(p);
   printf("fin de partie\n");
  
+}
+
+/*Etape 4, arbre de profondeur n*/
+
+/*
+R: Joue le prochain coup en fonction du plateau simulé de profondeur n 
+E: 1 TAD plat, la couleur et la profondeur
+S: Rien
+*/
+void simuler_coup_etape_4(plat p, int couleur, int prof){
+    arbre a;
+    a = simuler_coup_prof_n(p, couleur, prof);
+    set_case_plateau(a->coord.x,a->coord.y,couleur,p);
+    liberer_arbre(a);
+    a = NULL;
+}
+
+arbre simuler_coup_prof_n(plat p, int couleur, int prof){
+    arbre a;
+    int nbfils;
+    int x,y,n, x_min, y_min;
+    plat tmp = NULL;
+    tab_coordonnee tc;
+    int min = 999, max = -999;
 }
 
 #endif /*_ARBRE_C_*/
