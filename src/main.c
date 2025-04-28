@@ -40,7 +40,7 @@ void aide(char *s){
 
 int main(int argc,char*argv[]){
     int val,index=-1;/*entiers relatifs aux fonctions de getopt.h*/
-    int terminal=0,h=1,r=1,niveau=2,profondeur=0;/*entiers relatifs aux options*/
+    int terminal=0,h=1,r=1,niveau=0,profondeur=2;/*entiers relatifs aux options*/
     
     const char* optstring=":htrn:p:";
     const struct option lopts[] = {
@@ -83,10 +83,11 @@ int main(int argc,char*argv[]){
     if (terminal){
         switch(niveau){
             case 1 : boucle_jeu_etape_3();break;
+            case 2 : boucle_jeu_etape_4(profondeur);break;
             default : boucle_jeu_terminal();break;
         }
     }
-    else jeu(niveau);
+    else jeu(niveau, profondeur);
     exit(EXIT_SUCCESS);
 }
   

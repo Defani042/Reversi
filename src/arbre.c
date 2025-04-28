@@ -309,6 +309,8 @@ void simuler_coup_etape_4(plat p, int couleur, int prof){
     arbre a;
     a = simuler_coup_prof_n(p, couleur, prof);
     set_case_plateau(a->coord.x,a->coord.y,couleur,p);
+    p=retourner_jetons(p,a->coord.x,a->coord.y,couleur);
+    p=plat_supprimer_quatre(p);
     liberer_arbre(a);
     a = NULL;
 }
@@ -381,7 +383,7 @@ arbre simuler_coup_prof_n(plat p, int couleur, int prof){
 
         for (n = 0; n < nbfils; n++){
             pltcpy(p, tmp);
-            afficher_mat(p);
+            /*afficher_mat(p);*/
             x = tc.tab[n].x;
             y = tc.tab[n].y;
             if (set_case_plateau(x, y, couleur, tmp) != 1){
