@@ -418,7 +418,7 @@ arbre simuler_coup_prof_n(plat p, int couleur, int prof){
 
 /*
 R: Permet de jouer avec une IA de niveau étape 3
-E: Aucun
+E: Un entier profondeur
 S: Rien
 */
 
