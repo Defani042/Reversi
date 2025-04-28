@@ -48,4 +48,6 @@ void boucle_jeu_etape_3();
 void simuler_coup_etape_4(plat p, int couleur, int prof);
 
 arbre simuler_coup_prof_n(plat p, int couleur, int prof);
+
+void boucle_jeu_etape_4(int prof);
 #endif /*_ARBRE_H_*/

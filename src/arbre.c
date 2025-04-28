@@ -416,4 +416,40 @@ arbre simuler_coup_prof_n(plat p, int couleur, int prof){
     }
 }
 
+/*
+R: Permet de jouer avec une IA de niveau étape 3
+E: Aucun
+S: Rien
+*/
+
+void boucle_jeu_etape_4(int prof){
+  /*création et allocution du plateau*/
+  plat p;
+  p=allocution_plateau(LIGNE,COLONNE);
+  choisir_joueur(p);/*demande au joueur la couleur qu'il veux jouer*/
+  if (!taper_qui_commence()){
+      if(verifier_tour_joueur(p,p->bot)){
+        simuler_coup_etape_4(p, p->bot, prof); /*le bot joue*/
+      } /*si le joueur commence pas, alors le bot joue*/
+  }
+  /*tant que le plateau n'est pas rempli*/
+  while(verifier_tour_joueur(p,p->joueur) || verifier_tour_joueur(p,p->bot)){
+    printf("\033[H\033[J");/*clear le terminal*/
+    p=liste_coup_valide(p,p->joueur); /*on affiche les coups valides*/
+    afficher_plateau(p);/*on affiche le plateau*/
+    if(verifier_tour_joueur(p,p->joueur)){
+       saisir_coup(p);/*on demande un coup a l'utilisateur*/  
+    }
+    p=plat_supprimer_quatre(p); /*on efface les coups jouables pour le joueur*/
+    if(verifier_tour_joueur(p,p->bot)){
+        simuler_coup_etape_4(p, p->bot, prof); /*le bot joue*/
+    }
+    calculer_score(p);/*on calcule le score*/
+  }
+  fin_jeux(p);
+  liberer_plateau(p);
+  printf("fin de partie\n");
+ 
+}
+
 #endif /*_ARBRE_C_*/
