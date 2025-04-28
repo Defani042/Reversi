@@ -137,7 +137,7 @@ arbre simuler_coup_prof_0(plat p, int couleur){
 }
 
 /*
-R: Renvoie un arbre contenant la valeur évaluée du plateau simulé la plus élevée
+R: Renvoie un arbre contenant la valeur évaluée du plateau simulé la plus faible
 E: 1 TAD plat et la couleur
 S: Un arbre intermédiaire
 */
@@ -193,7 +193,7 @@ arbre simuler_coup_prof_1(plat p, int couleur){
 }
 
 /*
-R: Renvoie un arbre contenant la valeur évaluée du plateau simulé la plus faible
+R: Renvoie un arbre contenant la valeur évaluée du plateau simulé la plus élevée
 E: 1 TAD plat et la couleur
 S: La racine de l'arbre
 */
@@ -313,13 +313,107 @@ void simuler_coup_etape_4(plat p, int couleur, int prof){
     a = NULL;
 }
 
+/*
+R: Renvoit l'arbre simulant les prochains coups du bot ou du joueur en fonction de la profondeur
+E: 1 TAD plat, la couleur et la profondeur
+S: L'arbre de jeu
+*/
 arbre simuler_coup_prof_n(plat p, int couleur, int prof){
     arbre a;
     int nbfils;
-    int x,y,n, x_min, y_min;
+    int x,y,n, x_min, y_min, x_max, y_max;
     plat tmp = NULL;
     tab_coordonnee tc;
     int min = 999, max = -999;
+
+    if (prof == 0){
+        return creer_arbre(eval(p, couleur), 0);
+    }
+    if (prof % 2 == 0){
+        x_max = max;
+        y_max = max;
+        nbfils = plat_compter_quatre(p);
+        tc = recup_coup_valide(p);
+        a = creer_arbre(max, nbfils);
+        tmp = allocution_plateau(LIGNE, COLONNE);
+
+        for (n = 0; n < nbfils; n++){
+            pltcpy(p, tmp);
+            x = tc.tab[n].x;
+            y = tc.tab[n].y;
+            if (set_case_plateau(x, y, couleur, tmp) != 1){
+                printf("Cas impossible, s'inquiéter si ce message apparait(2)\n");
+            }
+            tmp = retourner_jetons(tmp, x, y, couleur);
+            tmp = plat_supprimer_quatre(tmp);
+            tmp = liste_coup_valide(tmp, couleur);
+            a->branches[n] = simuler_coup_prof_n(tmp, (couleur % 2) + 1, prof-1);
+            if (max <= a->branches[n]->val){
+                if (max == a->branches[n]->val){
+                    if (rand() % 2){
+                        max = a->branches[n]->val;
+                        x_max = x;
+                        y_max = y;
+                    }
+                }
+                else{
+                    max = a->branches[n]->val;
+                    x_max = x;
+                    y_max = y;
+                }
+            }
+        }
+        a->coord.x = x_max;
+        a->coord.y = y_max;
+        a->val = max;
+        liberer_plateau(tmp);
+        tmp = NULL;
+        liberer_tab_coord(tc);
+        return a;
+    }
+    else{
+        x_min = min;
+        y_min = min;
+        nbfils = plat_compter_quatre(p);
+        tc = recup_coup_valide(p);
+        a = creer_arbre(min, nbfils);
+        tmp = allocution_plateau(LIGNE, COLONNE);
+
+        for (n = 0; n < nbfils; n++){
+            pltcpy(p, tmp);
+            afficher_mat(p);
+            x = tc.tab[n].x;
+            y = tc.tab[n].y;
+            if (set_case_plateau(x, y, couleur, tmp) != 1){
+                printf("Cas impossible, s'inquiéter si ce message apparait(1)\n");
+            }
+            tmp = retourner_jetons(tmp, x, y, couleur);
+            tmp = plat_supprimer_quatre(tmp);
+            tmp = liste_coup_valide(tmp, couleur);
+            a->branches[n] = simuler_coup_prof_n(tmp, (couleur % 2) + 1, prof-1);
+            if (min >= a->branches[n]->val){
+                if (min == a->branches[n]->val){
+                    if (rand() % 2){
+                        min = a->branches[n]->val;
+                        x_min = x;
+                        y_min = y;
+                    }
+                }
+                else{
+                    min = a->branches[n]->val;
+                    x_min = x;
+                    y_min = y;
+                }
+            }
+        }
+        a->coord.x = x_min;
+        a->coord.y = y_min;
+        a->val = min;
+        liberer_plateau(tmp);
+        tmp = NULL;
+        liberer_tab_coord(tc);
+        return a;
+    }
 }
 
 #endif /*_ARBRE_C_*/
