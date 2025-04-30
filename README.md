@@ -1,43 +1,112 @@
 # Reversi
 
-## Avant propos
-jeu de reversi en c
+## Avant-propos
+
+Jeu de Reversi en C.
 
 ## Préambule
-Ce jeu a été réalisé dans un cadre universitaire en tant que projet de programmation impérative pour la seconde année de licence en informatique à l'université Jean Monnet. 
+
+Ce jeu a été réalisé dans un cadre universitaire, en tant que projet de programmation impérative pour la seconde année de licence en informatique à l’université Jean Monnet.
+
 Les personnes ayant participé au projet sont :
-- Adrien.Defay
-- Gaultier.Peyrard
-- Dorian.Breuil
+- Adrien Defay  
+- Gaultier Peyrard  
+- Dorian Breuil  
 
 ## Prérequis
-Pour pouvoir exécuter le Makefile du projet, il vous faut installer la librairie MLV pour plus d'information veuillez consulter le site officiel de MLV et rendez vous dans la rubrique installation : [MLV_INSTALATION](http://www-igm.univ-mlv.fr/~boussica/mlv/api/French/html/installation.html)  
 
-## Répertoires Principaux
+Pour exécuter le Makefile du projet, il est nécessaire d’installer la bibliothèque **MLV**.  
+Pour plus d’informations :  
+👉 [Installation de MLV](http://www-igm.univ-mlv.fr/~boussica/mlv/api/French/html/installation.html)
 
-   - **`src/`** : Contient le code source de l'application.
-   - **`fich/`** : Contient les fichiers de configuration et les scripts auxiliaires.
-   - **`build/`** : Contient les fichiers objets créer pendant la compilation du projet.
-   
-## Module et structure du code
+## Répertoires principaux
 
-le code est agencer en différents modules :
-   
-   - **Main**: le module principale
-   - **Gamewindow**: module de gestion de la fenêtre de jeux
-   - **Plateau**: module de gestion du plateau de jeux
-   - **Arbre**: module de gestion des arbres
-   - **coordonnee**: module de gestion des tableau de coordonnées
+- **`src/`** : Contient le code source de l’application.  
+- **`fich/`** : Contient les fichiers de configuration et les scripts auxiliaires.  
+- **`build/`** : Contient les fichiers objets générés lors de la compilation.  
 
-le code contient les TADs suivantes :
+## Modules et structure du code
 
-   - **plat**: contenant les information relative au plateau de jeux
-   - **arbre**: contenant un arbre pour calculer les possibilité du Bot 
+Le code est organisé en plusieurs modules :
 
-le code contient les structure suivantes :
-    - **cordonnee**: contenant les informations relatives à une coordonnées (x,y)
-    - **tab_coordonnee**: contenant un tableau de taille len de coordonnées
+- **Main** : module principal  
+- **Gamewindow** : gestion de la fenêtre de jeu  
+- **Plateau** : gestion du plateau de jeu  
+- **Arbre** : gestion de l’arbre de décisions  
+- **Coordonnee** : gestion des coordonnées  
 
-## Condition d'utilisation
+### Types Abstraits de Données (TAD)
 
-Toutes forment de distribution illégale à des fins monétaire est strictement interdites et sans l'autorisation des auteurs.
+#### `plat`
+
+Contient les informations relatives au plateau de jeu :
+
+- `mat` : tableau 2D (0 = vide, 1 = noir, 2 = blanc, 4 = jouable)  
+- `l`, `c` : dimensions du plateau  
+- `joueur`, `bot` : couleur respective (1 = noir, 2 = blanc)  
+- `scoreb`, `scoren` : scores des Blancs et Noirs  
+
+#### `arbre`
+
+Représente un arbre de décisions pour l’IA :
+
+- `val` : valeur du coup (basée sur une grille stratégique)  
+- `coord` : coordonnées du coup  
+- `branches` : tableau de sous-arbres (coups suivants)  
+- `nb_fils` : nombre de coups enfants  
+
+### Structures de données
+
+#### `coordonnee`
+
+- `x`, `y` : entiers (coordonnées)  
+
+#### `tab_coordonnee`
+
+- `len` : taille du tableau  
+- `tab` : tableau de coordonnées  
+
+## Fonctionnement de l’IA
+
+### Phases 1 & 2
+
+L’IA sélectionne une case aléatoirement parmi les coups valides. C’est la version la plus simple.
+
+### Phase 3
+
+Utilisation d’une **matrice d’évaluation** des positions :
+
+```text
+{  4, 2, 2, 2, 2, 2, 2, 4 },
+{  2,-2,-1,-1,-1,-1,-2, 2 },
+{  2,-1, 1, 1, 1, 1,-1, 2 },
+{  2,-1, 1, 0, 0, 1,-1, 2 },
+{  2,-1, 1, 0, 0, 1,-1, 2 },
+{  2,-1, 1, 1, 1, 1,-1, 2 },
+{  2,-2,-1,-1,-1,-1,-2, 2 },
+{  4, 2, 2, 2, 2, 2, 2, 4 }
+
+**Légende** :
+- `4 (COIN)` : coins, prioritaires car irréversibles  
+- `2 (BORD)` : bords avantageux  
+- `1 (BASE)` : positions sûres  
+- `0 (DEFA)` : neutres  
+- `-1 (MAUV)` : risquées  
+- `-2 (DANG)` : à éviter absolument  
+
+Utilisation de `simuler_cou_prof_3()` :  
+Elle simule 2 coups du joueur et 2 coups du bot. Elle retourne un arbre d’évaluation des coups possibles.  
+Si plusieurs coups ont la même valeur, le choix est fait aléatoirement.
+
+### Phase 4
+
+Approche récursive avec `simuler_coup_prof_n()` :  
+Cette fonction permet de simuler une profondeur arbitraire de coups pour l’IA.  
+Elle prend en argument :
+- un plateau  
+- la couleur du bot  
+- la profondeur de l’arbre à calculer  
+
+## Conditions d’utilisation
+
+Toute forme de distribution non autorisée à des fins commerciales est strictement interdite sans l’accord explicite des auteurs.
