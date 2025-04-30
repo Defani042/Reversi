@@ -7,7 +7,7 @@
 \usepackage{amssymb}
 \usepackage{hyperref}
 
-\title{Présentation du prjets de programmation impérative}
+\title{Présentation du projets de programmation impérative}
 \author{\textsc{Breuil} Dorian, \textsc{Defay} Adrien et \textsc{Peyrard} Gaultier}
 \date{\today}
 
@@ -23,65 +23,161 @@
 
 \section{Introduction}
 \begin{frame}
-  \frametitle{Introdutions}  % Titre de la diapositive
+  \frametitle{Introdution}  % Titre de la diapositive
   % Contenu de la diapositive
   Voici nos choix de pensées pour notre projet.
 \end{frame}
 
-\section{Choix de l'ia}
+\section{Module et structure du code}
 \begin{frame}
-  \frametitle{Choix de l'ia}  % Titre de la diapositive
-  % Contenu de la diapositive
-  
+  \begin{center}
+      \Large \textbf{Module et structure du code}
+  \end{center}
 \end{frame}
 
-\section{Structure de données}
 \begin{frame}
-  \frametitle{Structure de données}
+  \subsection{Organisation du code}
+  \frametitle{Organisation du code}
+  Le code est organisé en plusieurs modules :
   \begin{itemize}
-  \item Structure plateau.
-  \item Structure arbre.
-  \item Structure coordonnée.
+  \item \textbf{Main} : module principal
+  \item \textbf{Gamewindow} : gestion de la fenêtre de jeu
+  \item \textbf{Plateau} : gestion du plateau de jeu
+  \item \textbf{Arbre} : gestion de l’arbre de décisions
+  \item \textbf{Coordonnee} : gestion des coordonnées
   \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \section{Types abstrait de données}
+  \frametitle{Organisation du code}
 \end{frame}
 
 \subsection{Structure plateau}
 \begin{frame}
   \frametitle{Structure plateau}
-  \includegraphics[scale=0.4]{fich/struct_plateau.png}
+  \begin{itemize}
+    \item \textit{mat} : tableau 2D (0 = vide, 1 = noir, 2 = blanc, 4 = jouable)
+    \item \textit{l}, textit{c} : dimensions du plateau
+    \item \textit{joueur}, \textit{bot} : couleur respective (1 = noir, 2 = blanc)
+    \item \textit{scoreb}, \textit{scoren} : scores des Blancs et Noirs
+  \end{itemize}
 \end{frame}
 
 \subsection{Structure arbre}
 \begin{frame}
   \frametitle{Structure arbre}
-  \includegraphics[scale=0.4]{fich/struct_arbre.png}
+  \begin{itemize}
+    \item \textit{val} :  valeur du coup (basée sur une grille stratégique)
+    \item \textit{coord} : coordonnées du coup
+    \item \textit{branches} : tableau de sous-arbres (coups suivants)
+    \item \textit{nb\_fils} : nombre de coups enfants
+  \end{itemize}
 \end{frame}
 
-\subsection{Structure coordonnées}
+\section{Structure de données}
 \begin{frame}
-  \frametitle{Structure coordonnée}
-  \includegraphics[scale=0.4]{fich/struct_coordonnees.png}
+  \frametitle{Structure de données}
+  \subsection{coordonnées}
+  \textit{coordonnee}
+  \begin{itemize}
+    \item \textit{x} ,\textit{y} : entiers (coordonnées)
+  \end{itemize}
+
+~
+
+  \subsection{tab\_coordonnées}
+  \textit{tab\_coordonnee}
+  \begin{itemize}
+    \item \textit{len} : taille du tableau
+    \item \textit{tab} : tableau de coordonnées
+  \end{itemize}
 \end{frame}
 
-\section{Difficultées rencontrées}
+\section{Fonctionnement de l'IA}
 \begin{frame}
-  \frametitle{Difficultés rencontrées}
-  \begin{enumerate}
-  \item Comment faire pour parcourir l'arbre sans se perdre et comment faire pour économiser de la mémoire ?
-  \end{enumerate}
+  \begin{center}
+      \Large \textbf{Fonctionnement de l'IA}
+  \end{center}
 \end{frame}
 
-\section{Solution trouvées}
+\subsection{Phases 1 \& 2}
 \begin{frame}
-  \frametitle{Solutions trouvées}
-  \begin{enumerate}
-  \item Dans le cas de l'étape 3, 3 cas différantes dans la fonction : profondeur 0, 1 et 2.   
-  \end{enumerate}
+  \frametitle{Phases 1 \& 2}
+  L’IA sélectionne une case aléatoirement parmi les coups valides.
+
+  C’est la version la plus simple.
+\end{frame}
+
+\subsection{Phases 3}
+\begin{frame}
+  \frametitle{Phases 3}
+  Utilisation d’une \textbf{matrice d’évaluation} des positions :
+
+  \begin{tabular}{|c|c|c|c|c|c|c|c|}
+    \hline
+    COIN & BORD & BORD & BORD & BORD & BORD & BORD & COIN \\
+    \hline
+    BORD & DANG & MAUV & MAUV & MAUV & MAUV & DANG & BORD \\
+    \hline
+    BORD & MAUV & BASE & BASE & BASE & BASE & MAUV & BORD \\
+    \hline
+    BORD & MAUV & BASE & DEFA & DEFA & BASE & MAUV & BORD \\
+    \hline
+    BORD & MAUV & BASE & DEFA & DEFA & BASE & MAUV & BORD \\
+    \hline
+    BORD & MAUV & BASE & BASE & BASE & BASE & MAUV & BORD \\
+    \hline
+    BORD & DANG & MAUV & MAUV & MAUV & MAUV & DANG & BORD \\
+    \hline
+    COIN & BORD & BORD & BORD & BORD & BORD & BORD & COIN \\
+    \hline
+  \end{tabular}
+  \textbf{Légende} :
+  \begin{itemize}
+    \item \textit{4 (COIN)} : coins, prioritaires car irréversibles
+    \item \textit{2 (BORD)} : bords avantageux
+    \item \textit{1 (BASE)} : positions sûres
+    \item \textit{0 (DEFA)} : neutres
+    \item \textit{-1 (MAUV)} : risquées
+    \item \textit{-2 (DANG)} : à éviter absolument
+  \end{itemize}
+  Utilisation de \textit{simuler\_cou\_prof\_3()} :
+
+Elle simule 2 coups du joueur et 2 coups du bot. Elle retourne un arbre d’évaluation des coups possibles.
+
+Si plusieurs coups ont la même valeur, le choix est fait aléatoirement.
+\end{frame}
+
+\subsection{Phases 4}
+\begin{frame}
+  \frametitle{Phases 4}
+  Approche \textbf{récursive} avec \textit{simuler\_coup\_prof\_n()} :
+
+  Cette fonction permet de simuler une profondeur arbitraire de coups pour l’IA.
+
+  Elle prend en argument :
+  \begin{itemize}
+    \item Un plateau
+    \item La couleur du bot
+    \item La profondeur de l’arbre à calculer
+  \end{itemize}
+\end{frame}
+
+\section{Difficultées rencontrées et solution trouvées}
+\begin{frame}
+  \frametitle{Difficultés rencontrées et solution trouvées}
+  \begin{itemize}
+  \item D : Comment faire pour parcourir l'arbre sans se perdre et comment faire pour économiser de la mémoire ?
+  \item S : Dans le cas de l'étape 3, 3 cas différantes dans la fonction : profondeur 0, 1 et 2.   
+  \end{itemize}
 \end{frame}
 
 \section{Difficultées non résolues}
 \begin{frame}
-  \frametitle{Difficultés non résolues}
+  \begin{center}
+      \Large \textbf{Difficultées non résolues}
+  \end{center}
 \end{frame}
 
 \section{Conclusion}
