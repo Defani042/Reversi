@@ -76,16 +76,16 @@ L’IA sélectionne une case aléatoirement parmi les coups valides. C’est la 
 
 Utilisation d’une **matrice d’évaluation** des positions :
 
-<pre> ```text
-{ 4, 2, 2, 2, 2, 2, 2, 4 },
-{ 2, -2, -1, -1, -1, -1, -2, 2 },
-{ 2, -1, 1, 1, 1, 1, -1, 2 },
-{ 2, -1, 1, 0, 0, 1, -1, 2 },
-{ 2, -1, 1, 0, 0, 1, -1, 2 },
-{ 2, -1, 1, 1, 1, 1, -1, 2 },
-{ 2, -2, -1, -1, -1, -1, -2, 2 },
-{ 4, 2, 2, 2, 2, 2, 2, 4 }
-``` </pre>
+<pre> 
+      {COIN,BORD,BORD,BORD,BORD,BORD,BORD,COIN},
+      {BORD,DANG,MAUV,MAUV,MAUV,MAUV,DANG,BORD},
+      {BORD,MAUV,BASE,BASE,BASE,BASE,MAUV,BORD},
+      {BORD,MAUV,BASE,DEFA,DEFA,BASE,MAUV,BORD},
+      {BORD,MAUV,BASE,DEFA,DEFA,BASE,MAUV,BORD},
+      {BORD,MAUV,BASE,BASE,BASE,BASE,MAUV,BORD},
+      {BORD,DANG,MAUV,MAUV,MAUV,MAUV,DANG,BORD},
+      {COIN,BORD,BORD,BORD,BORD,BORD,BORD,COIN}
+</pre>
 
 **Légende** :
 
