@@ -76,7 +76,6 @@ L’IA sélectionne une case aléatoirement parmi les coups valides. C’est la 
 
 Utilisation d’une **matrice d’évaluation** des positions :
 
-```text
 {  4, 2, 2, 2, 2, 2, 2, 4 },
 {  2,-2,-1,-1,-1,-1,-2, 2 },
 {  2,-1, 1, 1, 1, 1,-1, 2 },
@@ -87,6 +86,7 @@ Utilisation d’une **matrice d’évaluation** des positions :
 {  4, 2, 2, 2, 2, 2, 2, 4 }
 
 **Légende** :
+
 - `4 (COIN)` : coins, prioritaires car irréversibles  
 - `2 (BORD)` : bords avantageux  
 - `1 (BASE)` : positions sûres  
