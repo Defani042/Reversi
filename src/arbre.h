@@ -56,4 +56,5 @@ void boucle_jeu_etape_4(int prof);
 
 coordonnee alphabeta(arbre noeud, int alpha, int beta, int is_min);
 
+arbre evaluation_arbre(plat p, int couleur, int prof);
 #endif /*_ARBRE_H_*/

@@ -536,7 +536,61 @@ coordonnee alphabeta(arbre noeud, int alpha, int beta, int is_min) {
     return best_coord;  /** Retourne la meilleure coordonnée trouvée */
 }
 
+/*
+R: Renvoit l'arbre dont tous les plateaux ont été évalués.
+E: 1 TAD plat, la couleur et la profondeur
+S: L'arbre de jeu
+*/
 
+arbre evaluation_arbre(plat p, int couleur, int prof){
+    arbre a;
+    int nbfils;
+    int x,y,n;
+    plat tmp = NULL;
+    tab_coordonnee tc;
+
+    /* Cas d'arrêt. Si prof == 0, alors on renvoit une feuille évaluée*/
+    if (prof == 0){
+        return creer_arbre(eval(p, couleur), 0);
+    }
+
+    /*On récupère le nombre de coups valides*/
+    nbfils = plat_compter_quatre(p);
+
+    /*On récupère les coordonnées des coups valides*/
+    tc = recup_coup_valide(p);
+
+    /*On crée un arbre en évaluant le plateau*/
+    a = creer_arbre(eval(p,couleur), nbfils);
+
+    /*On alloue un plateau temporaire*/
+    tmp = allocution_plateau(LIGNE, COLONNE);
+
+    /*Pour chaque fils, on simule un coup jouer*/
+    for (n = 0; n < nbfils; n++){
+        pltcpy(p, tmp);
+        x = tc.tab[n].x;
+        y = tc.tab[n].y;
+        if (set_case_plateau(x, y, couleur, tmp) != 1){
+            printf("Cas impossible, s'inquiéter si ce message apparait(2)\n");
+        }
+        tmp = retourner_jetons(tmp, x, y, couleur);
+        tmp = plat_supprimer_quatre(tmp);
+        tmp = liste_coup_valide(tmp, couleur);
+
+        /*Le nieme fils est simulé via la fonction récursive*/
+        a->branches[n] = simuler_coup_prof_n(tmp, (couleur % 2) + 1, prof - 1);
+        a->branches[n]->coord.x = x;
+        a->branches[n]->coord.y = y;
+    }
+
+    liberer_plateau(tmp);
+    tmp = NULL;
+    liberer_tab_coord(tc);
+
+    /*On revoit l'arbre évalué*/
+    return a;
+}
 
 
 #endif /*_ARBRE_C_*/
