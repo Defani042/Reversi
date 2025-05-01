@@ -454,4 +454,69 @@ void boucle_jeu_etape_4(int prof){
  
 }
 
+/*
+R : Évaluer un arbre de jeu en appliquant l’élagage alpha-bêta (optimisation de Minimax).
+E : 
+    - 1 TAD arbre représentant un nœud courant du jeu
+    - 2 entiers alpha et beta (bornes d’élagage)
+    - 1 entier is_min (1 si c’est au joueur Min, 0 si c’est au joueur Max)
+S : 
+    - 1 entier représentant la meilleure valeur que peut garantir le joueur courant
+*/
+int alphabeta(arbre noeud, int alpha, int beta, int is_min) {
+    int v;          /* Variable pour stocker la meilleure valeur trouvée */
+    int i;          /* Indice de boucle */
+    int val_fils;   /* Valeur retournée par le sous-arbre */
+
+    if (noeud == NULL)
+        return 0; /* Par sécurité : si le nœud est NULL, on retourne 0 */
+
+    if (noeud->nb_fils == 0) {
+        /* Cas terminal : le nœud est une feuille */
+        return noeud->val;
+    }
+
+    if (is_min) {
+        v = INT_MAX; /* Initialisation à +∞ pour le joueur Min (cherche la valeur la plus basse) */
+
+        for (i = 0; i < noeud->nb_fils; i++) {
+            /* Appel récursif sur chaque fils, le joueur suivant est Max */
+            val_fils = alphabeta(noeud->branches[i], alpha, beta, 0);
+
+            /* Mise à jour de v avec la plus petite valeur vue jusqu'à présent */
+            if (val_fils < v) v = val_fils;
+
+            /* Coupure alpha : si alpha >= v, le joueur Max ne choisira jamais ce chemin */
+            if (alpha >= v) {
+                return v;
+            }
+
+            /* Mise à jour de beta avec la nouvelle borne inférieure */
+            if (v < beta) beta = v;
+        }
+    } else {
+        v = INT_MIN; /* Initialisation à -∞ pour le joueur Max (cherche la valeur la plus haute) */
+
+        for (i = 0; i < noeud->nb_fils; i++) {
+            /* Appel récursif sur chaque fils, le joueur suivant est Min */
+            val_fils = alphabeta(noeud->branches[i], alpha, beta, 1);
+
+            /* Mise à jour de v avec la plus grande valeur vue jusqu'à présent */
+            if (val_fils > v) v = val_fils;
+
+            /* Coupure beta : si v >= beta, le joueur Min ne laissera jamais ce chemin être pris */
+            if (v >= beta) {
+                return v;
+            }
+
+            /* Mise à jour de alpha avec la nouvelle borne supérieure */
+            if (v > alpha) alpha = v;
+        }
+    }
+
+    /* Retourne la meilleure valeur trouvée à ce niveau */
+    return v;
+}
+
+
 #endif /*_ARBRE_C_*/

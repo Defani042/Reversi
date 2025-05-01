@@ -3,6 +3,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <limits.h>
+
+
 #include "plateau.h"
 #include "coordonnee.h"
 
@@ -50,4 +53,7 @@ void simuler_coup_etape_4(plat p, int couleur, int prof);
 arbre simuler_coup_prof_n(plat p, int couleur, int prof);
 
 void boucle_jeu_etape_4(int prof);
+
+int alphabeta(arbre noeud, int alpha, int beta, int is_min);
+
 #endif /*_ARBRE_H_*/
