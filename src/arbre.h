@@ -54,6 +54,6 @@ arbre simuler_coup_prof_n(plat p, int couleur, int prof);
 
 void boucle_jeu_etape_4(int prof);
 
-int alphabeta(arbre noeud, int alpha, int beta, int is_min);
+coordonnee alphabeta(arbre noeud, int alpha, int beta, int is_min);
 
 #endif /*_ARBRE_H_*/

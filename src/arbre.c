@@ -454,69 +454,89 @@ void boucle_jeu_etape_4(int prof){
  
 }
 
+
 /*
-R : Évaluer un arbre de jeu en appliquant l’élagage alpha-bêta (optimisation de Minimax).
+R : Évaluer un arbre de jeu en appliquant l’élagage alpha-bêta tout en retournant les coordonnées de la meilleure position.
 E : 
     - 1 TAD arbre représentant un nœud courant du jeu
     - 2 entiers alpha et beta (bornes d’élagage)
     - 1 entier is_min (1 si c’est au joueur Min, 0 si c’est au joueur Max)
 S : 
-    - 1 entier représentant la meilleure valeur que peut garantir le joueur courant
+    - 1 objet coordonnee représentant la meilleure position (coordonnées) à partir du nœud courant
 */
-int alphabeta(arbre noeud, int alpha, int beta, int is_min) {
-    int v;          /* Variable pour stocker la meilleure valeur trouvée */
-    int i;          /* Indice de boucle */
-    int val_fils;   /* Valeur retournée par le sous-arbre */
+coordonnee alphabeta(arbre noeud, int alpha, int beta, int is_min) {
+    int i;          /** Indice de boucle */
+    coordonnee best_coord;   /** Coordonnée de la meilleure position trouvée */
+    
+    /** Vérification si le nœud est NULL, cas où l'arbre est vide ou mal formé */
+    if (noeud == NULL) {
+        /** Retourner des coordonnées invalides si le nœud est NULL */
+        coordonnee invalid_coord;
+        invalid_coord.x = -1;
+        invalid_coord.y = -1;
+        return invalid_coord;  
+    }
 
-    if (noeud == NULL)
-        return 0; /* Par sécurité : si le nœud est NULL, on retourne 0 */
-
+    /** Vérification si le nœud est une feuille (n'a pas de sous-arbre) */
     if (noeud->nb_fils == 0) {
-        /* Cas terminal : le nœud est une feuille */
-        return noeud->val;
+        /** Cas terminal : le nœud est une feuille, retourner les coordonnées du nœud */
+        return noeud->coord;  /** Retourne les coordonnées du nœud (feuille) */
     }
 
+    /** Si c'est au tour du joueur Min */
     if (is_min) {
-        v = INT_MAX; /* Initialisation à +∞ pour le joueur Min (cherche la valeur la plus basse) */
+        /** Initialisation de best_coord à une valeur "très mauvaise" (maximale) */
+        best_coord.x = INT_MAX;
+        best_coord.y = INT_MAX;
 
+        /** Exploration de chaque sous-arbre (fils) */
         for (i = 0; i < noeud->nb_fils; i++) {
-            /* Appel récursif sur chaque fils, le joueur suivant est Max */
-            val_fils = alphabeta(noeud->branches[i], alpha, beta, 0);
+            /** Appel récursif sur chaque fils, le joueur suivant est Max */
+            coordonnee coord_fils = alphabeta(noeud->branches[i], alpha, beta, 0);
 
-            /* Mise à jour de v avec la plus petite valeur vue jusqu'à présent */
-            if (val_fils < v) v = val_fils;
-
-            /* Coupure alpha : si alpha >= v, le joueur Max ne choisira jamais ce chemin */
-            if (alpha >= v) {
-                return v;
+            /** Comparaison des valeurs des fils pour trouver le minimum */
+            if (coord_fils.x < best_coord.x || (coord_fils.x == best_coord.x && coord_fils.y < best_coord.y)) {
+                best_coord = coord_fils;  /** Met à jour avec la meilleure coordonnée */
             }
 
-            /* Mise à jour de beta avec la nouvelle borne inférieure */
-            if (v < beta) beta = v;
+            /** Coupure alpha : si alpha >= best_coord.x, le joueur Max ne choisira jamais ce chemin */
+            if (alpha >= best_coord.x) {
+                return best_coord;  /** Retourne la coordonnée actuelle si une coupure alpha se produit */
+            }
+
+            /** Mise à jour de beta avec la nouvelle borne inférieure */
+            if (best_coord.x < beta) beta = best_coord.x;
         }
-    } else {
-        v = INT_MIN; /* Initialisation à -∞ pour le joueur Max (cherche la valeur la plus haute) */
+    } else { /** Si c'est au tour du joueur Max */
+        /** Initialisation de best_coord à une valeur "très bonne" (minimale) */
+        best_coord.x = INT_MIN;
+        best_coord.y = INT_MIN;
 
+        /** Exploration de chaque sous-arbre (fils) */
         for (i = 0; i < noeud->nb_fils; i++) {
-            /* Appel récursif sur chaque fils, le joueur suivant est Min */
-            val_fils = alphabeta(noeud->branches[i], alpha, beta, 1);
+            /** Appel récursif sur chaque fils, le joueur suivant est Min */
+            coordonnee coord_fils = alphabeta(noeud->branches[i], alpha, beta, 1);
 
-            /* Mise à jour de v avec la plus grande valeur vue jusqu'à présent */
-            if (val_fils > v) v = val_fils;
-
-            /* Coupure beta : si v >= beta, le joueur Min ne laissera jamais ce chemin être pris */
-            if (v >= beta) {
-                return v;
+            /** Comparaison des valeurs des fils pour trouver le maximum */
+            if (coord_fils.x > best_coord.x || (coord_fils.x == best_coord.x && coord_fils.y > best_coord.y)) {
+                best_coord = coord_fils;  /** Met à jour avec la meilleure coordonnée */
             }
 
-            /* Mise à jour de alpha avec la nouvelle borne supérieure */
-            if (v > alpha) alpha = v;
+            /** Coupure beta : si best_coord.x >= beta, le joueur Min ne laissera jamais ce chemin être pris */
+            if (best_coord.x >= beta) {
+                return best_coord;  /** Retourne la coordonnée actuelle si une coupure beta se produit */
+            }
+
+            /** Mise à jour de alpha avec la nouvelle borne supérieure */
+            if (best_coord.x > alpha) alpha = best_coord.x;
         }
     }
 
-    /* Retourne la meilleure valeur trouvée à ce niveau */
-    return v;
+    /** Retourne la meilleure coordonnée trouvée parmi tous les fils */
+    return best_coord;  /** Retourne la meilleure coordonnée trouvée */
 }
+
+
 
 
 #endif /*_ARBRE_C_*/
