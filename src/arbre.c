@@ -98,6 +98,48 @@ void liberer_arbre(arbre a){
 }
 
 /*
+R : Afficher récursivement les nœuds d’un arbre (valeur, coordonnées, nombre de fils).
+E : 1 TAD arbre (racine de l’arbre).
+S : Aucun (affichage sur la sortie standard).
+*/
+void afficher_arbre(arbre a) {
+    /** Variable statique pour suivre la profondeur sans argument externe */
+    static int niveau = 0;
+    int i, j;
+
+    /** Vérifie si le nœud est vide */
+    if (a == NULL) {
+        for (j = 0; j < niveau; j++) {
+            printf("│   ");
+        }
+        printf("└── (NULL)\n");
+        return;
+    }
+
+    /** Affiche l’indentation selon la profondeur actuelle */
+    for (j = 0; j < niveau; j++) {
+        printf("│   ");
+    }
+
+    /** Affiche les infos du nœud courant */
+    printf("└── Val: %d | Coord: (%d, %d) | Fils: %d\n",
+           a->val, a->coord.x, a->coord.y, a->nb_fils);
+
+    /** Incrémente le niveau pour les fils */
+    niveau++;
+
+    /** Appelle récursivement l’affichage sur chaque fils */
+    for (i = 0; i < a->nb_fils; i++) {
+        afficher_arbre(a->branches[i]);
+    }
+
+    /** Décrémente le niveau après avoir fini les fils */
+    niveau--;
+}
+
+
+
+/*
 R: calculer le score d'un coup jouer sur le plateau
 E: 1 TAD plat 1 int (la couleur du joueur)
 S: 1 int le score
@@ -453,87 +495,107 @@ void boucle_jeu_etape_4(int prof){
   printf("fin de partie\n");
  
 }
-
+/*
+R: Fonction d'évaluation de la position (le score ou la qualité d'une position)
+E: 1 TAD arbre (node)
+S: Renvoie un entier qui représente l'évaluation de la position dans l'arbre
+*/
+int evaluation_position(arbre node) {
+    return node->val; /* Renvoie la valeur d'évaluation de la position */
+}
 
 /*
-R : Évaluer un arbre de jeu en appliquant l’élagage alpha-bêta tout en retournant les coordonnées de la meilleure position.
-E : 
-    - 1 TAD arbre représentant un nœud courant du jeu
-    - 2 entiers alpha et beta (bornes d’élagage)
-    - 1 entier is_min (1 si c’est au joueur Min, 0 si c’est au joueur Max)
-S : 
-    - 1 objet coordonnee représentant la meilleure position (coordonnées) à partir du nœud courant
+R: Algorithme Alpha-Beta pour explorer l'arbre des coups
+E: 
+    - 1 TAD arbre (node)
+    - un entier profondeur (profondeur maximale de recherche)
+    - deux entiers alpha et beta (les bornes de l'algorithme alpha-bêta)
+    - un entier maximisateur (1 si c'est le tour du joueur, 0 si c'est celui de l'adversaire)
+    - 1 pointeur cut pour savoir si un élagage a eu lieu
+S: Renvoie un entier représentant la meilleure évaluation d'une position à partir de l'arbre donné
 */
-coordonnee alphabeta(arbre noeud, int alpha, int beta, int is_min) {
-    int i;          /** Indice de boucle */
-    coordonnee best_coord;   /** Coordonnée de la meilleure position trouvée */
+int alphabeta(arbre node, int profondeur, int alpha, int beta, int maximisateur, int *cut) {
+    int val;
+    int i;
     
-    /** Vérification si le nœud est NULL, cas où l'arbre est vide ou mal formé */
-    if (noeud == NULL) {
-        /** Retourner des coordonnées invalides si le nœud est NULL */
-        coordonnee invalid_coord;
-        invalid_coord.x = -1;
-        invalid_coord.y = -1;
-        return invalid_coord;  
+    /* Cas de base : Si on atteint une profondeur maximale ou une feuille */
+    if (profondeur == 0 || node->nb_fils == 0) {
+        return evaluation_position(node); /* Retourne l'évaluation de la position actuelle */
     }
-
-    /** Vérification si le nœud est une feuille (n'a pas de sous-arbre) */
-    if (noeud->nb_fils == 0) {
-        /** Cas terminal : le nœud est une feuille, retourner les coordonnées du nœud */
-        return noeud->coord;  /** Retourne les coordonnées du nœud (feuille) */
-    }
-
-    /** Si c'est au tour du joueur Min */
-    if (is_min) {
-        /** Initialisation de best_coord à une valeur "très mauvaise" (maximale) */
-        best_coord.x = INT_MAX;
-        best_coord.y = INT_MAX;
-
-        /** Exploration de chaque sous-arbre (fils) */
-        for (i = 0; i < noeud->nb_fils; i++) {
-            /** Appel récursif sur chaque fils, le joueur suivant est Max */
-            coordonnee coord_fils = alphabeta(noeud->branches[i], alpha, beta, 0);
-
-            /** Comparaison des valeurs des fils pour trouver le minimum */
-            if (coord_fils.x < best_coord.x || (coord_fils.x == best_coord.x && coord_fils.y < best_coord.y)) {
-                best_coord = coord_fils;  /** Met à jour avec la meilleure coordonnée */
+    
+    if (maximisateur) { /* Maximisation pour le joueur actuel */
+        int max_val = INT_MIN;
+        
+        for (i = 0; i < node->nb_fils; i++) {
+            val = alphabeta(node->branches[i], profondeur - 1, alpha, beta, 0, cut);
+            /* Mise à jour de max_val avec une instruction if */
+            if (val > max_val) {
+                max_val = val;
             }
-
-            /** Coupure alpha : si alpha >= best_coord.x, le joueur Max ne choisira jamais ce chemin */
-            if (alpha >= best_coord.x) {
-                return best_coord;  /** Retourne la coordonnée actuelle si une coupure alpha se produit */
+            if (alpha > max_val) {
+                alpha = max_val;
             }
-
-            /** Mise à jour de beta avec la nouvelle borne inférieure */
-            if (best_coord.x < beta) beta = best_coord.x;
+            
+            /* Si l'élagage Alpha est supérieur ou égal à Beta, arrêter l'exploration */
+            if (alpha >= beta) {
+                *cut = 1; /* Indique qu'un élagage a eu lieu */
+            }
         }
-    } else { /** Si c'est au tour du joueur Max */
-        /** Initialisation de best_coord à une valeur "très bonne" (minimale) */
-        best_coord.x = INT_MIN;
-        best_coord.y = INT_MIN;
-
-        /** Exploration de chaque sous-arbre (fils) */
-        for (i = 0; i < noeud->nb_fils; i++) {
-            /** Appel récursif sur chaque fils, le joueur suivant est Min */
-            coordonnee coord_fils = alphabeta(noeud->branches[i], alpha, beta, 1);
-
-            /** Comparaison des valeurs des fils pour trouver le maximum */
-            if (coord_fils.x > best_coord.x || (coord_fils.x == best_coord.x && coord_fils.y > best_coord.y)) {
-                best_coord = coord_fils;  /** Met à jour avec la meilleure coordonnée */
+        return max_val;
+    } else { /* Minimisation pour l'adversaire */
+        int min_val = INT_MAX;
+        
+        for (i = 0; i < node->nb_fils; i++) {
+            val = alphabeta(node->branches[i], profondeur - 1, alpha, beta, 1, cut);
+            /* Mise à jour de min_val avec une instruction if */
+            if (val < min_val) {
+                min_val = val;
             }
-
-            /** Coupure beta : si best_coord.x >= beta, le joueur Min ne laissera jamais ce chemin être pris */
-            if (best_coord.x >= beta) {
-                return best_coord;  /** Retourne la coordonnée actuelle si une coupure beta se produit */
+            if (beta < min_val) {
+                beta = min_val;
             }
+            
+            /* Si l'élagage Beta est inférieur ou égal à Alpha, arrêter l'exploration */
+            if (alpha >= beta) {
+                *cut = 1; /* Indique qu'un élagage a eu lieu */
+            }
+        }
+        return min_val;
+    }
+}
 
-            /** Mise à jour de alpha avec la nouvelle borne supérieure */
-            if (best_coord.x > alpha) alpha = best_coord.x;
+/*
+R: Trouve le meilleur coup à jouer à partir de l'arbre donné en utilisant l'algorithme Alpha-Beta
+E: 
+    - 1 TAD arbre (racine) qui représente l'état actuel du jeu
+    - un entier profondeur qui détermine jusqu'à quelle profondeur effectuer la recherche
+S: Renvoie la coordonnée du meilleur coup à jouer
+*/
+coordonnee meilleur_coup(arbre racine, int profondeur) {
+    int max_val;
+    coordonnee meilleur_coup_coord;
+    int cut;
+    int i;
+    int val;
+    
+    max_val = INT_MIN;
+    cut = 0; /* Variable pour suivre si un élagage a eu lieu */
+    
+    /* Parcours des branches pour trouver le meilleur coup */
+    for (i = 0; i < racine->nb_fils; i++) {
+        cut = 0; /* Réinitialiser la condition d'élagage */
+        val = alphabeta(racine->branches[i], profondeur - 1, INT_MIN, INT_MAX, 0, &cut);
+        
+        /* Ne choisir que les coups non élagués avec une instruction if */
+        if (cut == 0) {
+            if (val > max_val) {
+                max_val = val;
+                meilleur_coup_coord = racine->branches[i]->coord;
+            }
         }
     }
-
-    /** Retourne la meilleure coordonnée trouvée parmi tous les fils */
-    return best_coord;  /** Retourne la meilleure coordonnée trouvée */
+    
+    return meilleur_coup_coord; /* Retourne la meilleure coordonnée */
 }
 
 /*
@@ -591,6 +653,72 @@ arbre evaluation_arbre(plat p, int couleur, int prof){
     /*On revoit l'arbre évalué*/
     return a;
 }
+
+/*
+R: Joue le prochain coup en utilisant l'algorithme alpha beta
+E: 1 TAD plat et la profondeur
+S: Rien
+*/
+void simuler_coup_etape_5(int prof,plat p){
+    coordonnee c;
+    arbre a;
+    int res;
+     
+    /*creation de l'abre + remplissage et recuperation des meilleure coordonnees*/
+    a = creer_arbre_vide();
+    a = evaluation_arbre(p,p->bot,prof);
+    afficher_arbre(a);
+    c = meilleur_coup(a,prof);
+    /*on joue la coordonnee en cas d'érreur la fonction renvoie -1 -1 en coordonnee */
+    
+    printf("coup jouer par le bot [%d,%d]\n",c.x,c.y);
+    res = set_case_plateau(c.x,c.y,p->bot,p);
+    if(!res){
+        printf("erreur coup jouer impossible [%d,%d]\n",c.x,c.y);
+        printf("arret du jeux\n");
+        exit(EXIT_FAILURE);
+    }
+    /*on retourne les pions*/
+    p = retourner_jetons(p,c.x,c.y,p->bot);
+
+}
+
+/*
+R: Permet de jouer avec une IA de niveau étape 3 utilisant alphabeta pour parcourir ces possibilitées
+E: Un entier profondeur
+S: Rien
+*/
+
+void boucle_jeu_etape_5(int prof){
+  /*création et allocution du plateau*/
+  plat p;
+  p=allocution_plateau(LIGNE,COLONNE);
+  choisir_joueur(p);/*demande au joueur la couleur qu'il veux jouer*/
+  if (!taper_qui_commence()){
+      if(verifier_tour_joueur(p,p->bot)){
+        simuler_coup_etape_5(prof,p); /*le bot joue*/
+      } /*si le joueur commence pas, alors le bot joue*/
+  }
+  /*tant que le plateau n'est pas rempli*/
+  while(verifier_tour_joueur(p,p->joueur) || verifier_tour_joueur(p,p->bot)){
+    printf("\033[H\033[J");/*clear le terminal*/
+    p=liste_coup_valide(p,p->joueur); /*on affiche les coups valides*/
+    afficher_plateau(p);/*on affiche le plateau*/
+    if(verifier_tour_joueur(p,p->joueur)){
+       saisir_coup(p);/*on demande un coup a l'utilisateur*/  
+    }
+    p=plat_supprimer_quatre(p); /*on efface les coups jouables pour le joueur*/
+    if(verifier_tour_joueur(p,p->bot)){
+        simuler_coup_etape_5(prof, p); /*le bot joue*/
+    }
+    calculer_score(p);/*on calcule le score*/
+  }
+  fin_jeux(p);
+  liberer_plateau(p);
+  printf("fin de partie\n");
+ 
+}
+
 
 
 #endif /*_ARBRE_C_*/

@@ -84,6 +84,7 @@ int main(int argc,char*argv[]){
         switch(niveau){
             case 1 : boucle_jeu_etape_3();break;
             case 2 : boucle_jeu_etape_4(profondeur);break;
+            case 3 : boucle_jeu_etape_5(profondeur);break;
             default : boucle_jeu_terminal();break;
         }
     }
