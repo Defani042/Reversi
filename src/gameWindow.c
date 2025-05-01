@@ -539,11 +539,10 @@ S:rien
   }
 
 /*
-R: Permet de jouer à l'étape 3
+R: Permet de jouer à l'étape 4
 E: rien
 S:rien
 */
-
 
 void boucle_jeu_etape_4_mlv(int prof){
     /*création et allocution du plateau*/
@@ -585,6 +584,52 @@ void boucle_jeu_etape_4_mlv(int prof){
     fin_partie(p,h);
   }
 
+  /*
+R: Permet de jouer à l'étape 5
+E: rien
+S:rien
+*/
+
+void boucle_jeu_etape_5_mlv(int prof){
+    /*création et allocution du plateau*/
+    int h;
+    plat p;
+    int commence=0;
+    p=allocution_plateau(LIGNE,COLONNE);
+    h=setMainWindow(*p);
+    choisir_joueur_mlv(p,h+200);/*demande au joueur la couleur qu'il veux jouer*/
+    commence=choisir_qui_commence(h+200);/*demande au joueur qui commence*/
+    /*tant que le plateau n'est pas rempli*/
+    if (!commence) {
+        if(verifier_tour_joueur(p,p->bot)){
+          h=setMainWindow(*p);
+          MLV_wait_milliseconds(500);
+          simuler_coup_etape_5(prof,p); /*le bot joue*/
+      }
+      p=plat_supprimer_quatre(p); /*on efface les coups jouables pour le joueur*/
+      calculer_score(p);/*on calcule le score*/
+    }
+    while(verifier_tour_joueur(p,p->joueur) || verifier_tour_joueur(p,p->bot)){
+      p=liste_coup_valide(p,p->joueur); /*on affiche les coups valides*/
+      h=setMainWindow(*p);
+      if(verifier_tour_joueur(p,p->joueur)){
+         saisir_coup_mlv(p,h);/*on demande un coup a l'utilisateur*/  
+      }
+      p=plat_supprimer_quatre(p); /*on efface les coups jouables pour le joueur*/
+      if(verifier_tour_joueur(p,p->bot)){
+          h=setMainWindow(*p);
+          MLV_wait_milliseconds(500);
+          simuler_coup_etape_5(prof,p); /*le bot joue*/
+      }
+      p=plat_supprimer_quatre(p); /*on efface les coups jouables pour le joueur*/
+      calculer_score(p);/*on calcule le score*/
+    }
+    h=setMainWindow(*p);
+    fin_jeux(p);
+    liberer_plateau(p);
+    fin_partie(p,h);
+  }
+
 /*
 R : permet de jouer
 E : rien
@@ -599,6 +644,7 @@ void jeu(int n, int prof){
     switch(n){
         case 1 : boucle_jeu_etape_3_mlv();break;
         case 2 : boucle_jeu_etape_4_mlv(prof);break;
+        case 3 : boucle_jeu_etape_5_mlv(prof);break;
         default : boucle_jeu_mlv();break;
     }
     
