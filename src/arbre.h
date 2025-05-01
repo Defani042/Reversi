@@ -56,7 +56,7 @@ arbre simuler_coup_prof_n(plat p, int couleur, int prof);
 
 void boucle_jeu_etape_4(int prof);
 
-int  evaluation_position(arbre node);
+int evaluation_position(arbre node);
 
 int alphabeta(arbre node, int profondeur, int alpha, int beta, int maximisateur, int *cut);
 

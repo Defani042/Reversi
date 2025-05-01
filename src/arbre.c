@@ -667,11 +667,11 @@ void simuler_coup_etape_5(int prof,plat p){
     /*creation de l'abre + remplissage et recuperation des meilleure coordonnees*/
     a = creer_arbre_vide();
     a = evaluation_arbre(p,p->bot,prof);
-    afficher_arbre(a);
+    /* afficher_arbre(a);*/
     c = meilleur_coup(a,prof);
     /*on joue la coordonnee en cas d'érreur la fonction renvoie -1 -1 en coordonnee */
     
-    printf("coup jouer par le bot [%d,%d]\n",c.x,c.y);
+    /* printf("coup jouer par le bot [%d,%d]\n",c.x,c.y);*/
     res = set_case_plateau(c.x,c.y,p->bot,p);
     if(!res){
         printf("erreur coup jouer impossible [%d,%d]\n",c.x,c.y);
