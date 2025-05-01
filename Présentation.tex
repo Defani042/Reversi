@@ -1,11 +1,6 @@
 \documentclass[9pt]{beamer}
 \usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
 \usepackage[french]{babel}
-\usepackage{graphicx}
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{hyperref}
 
 \title{Présentation du projets de programmation impérative}
 \author{\textsc{Breuil} Dorian, \textsc{Defay} Adrien et \textsc{Peyrard} Gaultier}
@@ -19,13 +14,6 @@
   \frametitle{Table des matières}
   \tableofcontents
   
-\end{frame}
-
-\section{Introduction}
-\begin{frame}
-  \frametitle{Introdution}  % Titre de la diapositive
-  % Contenu de la diapositive
-  Voici nos choix de pensées pour notre projet.
 \end{frame}
 
 \section{Module et structure du code}
@@ -48,17 +36,12 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}
-  \section{Types abstrait de données}
-  \frametitle{Organisation du code}
-\end{frame}
-
 \subsection{Structure plateau}
 \begin{frame}
   \frametitle{Structure plateau}
   \begin{itemize}
     \item \textit{mat} : tableau 2D (0 = vide, 1 = noir, 2 = blanc, 4 = jouable)
-    \item \textit{l}, textit{c} : dimensions du plateau
+    \item \textit{l}, \textit{c} : dimensions du plateau
     \item \textit{joueur}, \textit{bot} : couleur respective (1 = noir, 2 = blanc)
     \item \textit{scoreb}, \textit{scoren} : scores des Blancs et Noirs
   \end{itemize}
