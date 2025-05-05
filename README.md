@@ -19,7 +19,7 @@ Pour exécuter le Makefile du projet, il est nécessaire d’installer la biblio
 Pour plus d’informations :  
 👉 [Installation de MLV](http://www-igm.univ-mlv.fr/~boussica/mlv/api/French/html/installation.html)
 
-## Répertoires principaux
+## 📁 Répertoires principaux
 
 - **`src/`** : Contient le code source de l’application.  
 - **`fich/`** : Contient les fichiers de configuration et les scripts auxiliaires.  
@@ -35,9 +35,9 @@ Le code est organisé en plusieurs modules :
 - **Arbre** : gestion de l’arbre de décisions  
 - **Coordonnee** : gestion des coordonnées  
 
-### Types Abstraits de Données (TAD)
+### 🧱 Types Abstraits de Données (TAD)
 
-#### `plat`
+#### 🎲 `plat`
 
 Contient les informations relatives au plateau de jeu :
 
@@ -46,7 +46,7 @@ Contient les informations relatives au plateau de jeu :
 - `joueur`, `bot` : couleur respective (1 = noir, 2 = blanc)  
 - `scoreb`, `scoren` : scores des Blancs et Noirs  
 
-#### `arbre`
+#### 🌳  `arbre`
 
 Représente un arbre de décisions pour l’IA :
 
@@ -55,9 +55,9 @@ Représente un arbre de décisions pour l’IA :
 - `branches` : tableau de sous-arbres (coups suivants)  
 - `nb_fils` : nombre de coups enfants  
 
-### Structures de données
+### 🧬 Structures de données
 
-#### `coordonnee`
+#### 📍 `coordonnee`
 
 - `x`, `y` : entiers (coordonnées)  
 
