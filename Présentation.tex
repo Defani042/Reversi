@@ -147,20 +147,184 @@ Si plusieurs coups ont la même valeur, le choix est fait aléatoirement.
   \end{itemize}
 \end{frame}
 
-\section{Difficultées rencontrées et solution trouvées}
+\subsection{Phases 5}
 \begin{frame}
-  \frametitle{Difficultés rencontrées et solution trouvées}
+  \frametitle{Phases 5}
+  Le problèmes que nous rencontrons à cette étapes est le temps de calcul nécessaire pour trouver le bon chemin on utilise l'algo minmax on parcour l'entièreter de l'abre pour palier se problémes on utilise l'algoritmhe alphabeta :
+
+  ~
+
+\textbf{Algorithme Alpha-Beta – Résumé pour Reversi}
+
+~
+
+\textbf{Objectif}
+
+~
+
+L’algorithme Alpha-Beta est une version optimisée de Minimax, utilisé pour explorer les coups possibles dans un jeu comme Reversi, tout en \textbf{réduisant les calculs inutiles} grâce à des \textbf{coupes intelligentes}.
+\end{frame}
+
+\begin{frame}
+  \frametitle{Fonctionnement général}
   \begin{itemize}
-  \item D : Comment faire pour parcourir l'arbre sans se perdre et comment faire pour économiser de la mémoire ?
-  \item S : Dans le cas de l'étape 3, 3 cas différantes dans la fonction : profondeur 0, 1 et 2.   
+    \item \textbf{Deux joueurs }: 
+    \begin{itemize}
+      \item MAX : cherche à maximiser son score
+      \item MIN : cherche à minimiser le score adverse
+    \end{itemize}
+    \item \textbf{Paramètres clés} :
+    \begin{itemize}
+      \item \textit{Alpha} : meilleure valeur que MAX peut garantir jusqu’ici
+      \item \textit{Beta} : meilleure valeur que MIN peut garantir jusqu’ici
+    \end{itemize}
+    \item \textbf{Recherche récursive} :
+    \begin{itemize}
+      \item À chaque niveau de profondeur, on explore les coups possibles.
+      \item On met à jour Alpha et Beta à chaque nœud.
+      \item Si une branche ne peut pas influencer le résultat final, elle est coupée (non explorée).
+    \end{itemize}
+  \end{itemize}
+
+  ~
+
+
+  \textbf{Principe des coupes }
+  \begin{itemize}
+    \item Si MIN trouve un coup pire que ce que MAX accepte déjà (\textit{$score \leq alpha$}), il arrête d'explorer (coupe Alpha).
+    \item Si MAX trouve un coup meilleur que ce que MIN tolère (\textit{$score \geq beta$}), il coupe aussi (coupe Beta).
   \end{itemize}
 \end{frame}
 
-\section{Difficultées non résolues}
+
+\begin{frame}
+  \textbf{Avantage dans réversi}
+  
+  ~
+
+  \begin{itemize}
+    \item Évite d’explorer des coups non pertinents.Plus efficace que Minimax simple, surtout quand l’ordre des coups est bien optimisé.
+    \item Permet une recherche plus profonde dans le même temps.
+    \item Plus efficace que Minimax simple, surtout quand l’ordre des coups est bien optimisé.
+  \end{itemize}
+
+  ~
+
+
+  \textbf{Utilisation}
+
+  ~
+
+  L’algorithme Alpha-Beta est particulièrement adapté à Reversi en raison du grand nombre de coups possibles à chaque tour. Il est essentiel pour une IA efficace dans ce type de jeu.
+\end{frame}
+
+\section{Difficultées rencontrées et solution trouvées}
+\begin{frame}
+  \frametitle{Difficultés rencontrées et solution trouvées}
+  \begin{enumerate}
+    \item
+    \begin{itemize}
+      \item D : Comment faire pour parcourir l'arbre sans se perdre et comment faire pour économiser de la mémoire ?
+      \item S : Dans le cas de l'étape 3, 3 cas différantes dans la fonction : profondeur 0, 1 et 2.   
+    \end{itemize}
+    \item
+    \begin{itemize}
+      \item D : Comment agrandir la fenêtre de jeu sans avoir besoin de modifié tous le code associé.
+      \item S : Pour la fenêtre j'utilise une taille égale  à la hauteur de fenêtre - 100 pixel pour la longueur et la largeur et tout le code est ajusté sur cette valeure j'ai juste choisi de créer un fenêtre plus grande sur la longeur.   
+      \end{itemize}
+  \end{enumerate}
+\end{frame}
+
+\section{Amélioration}
 \begin{frame}
   \begin{center}
-      \Large \textbf{Difficultées non résolues}
+      \Large \textbf{Amélioration}
   \end{center}
+\end{frame}
+
+\begin{frame}
+  \subsection{L'effet d'horizon ?}
+  \textbf{L'effet d'horizon ?}
+
+  L'effet d'horizon survient quand l'IA, à cause de sa \textbf{profondeur de recherche limitée, n'anticipe pas une menace ou une opportunité majeure} située juste après la fin de sa vision. Cela peut la pousser à :
+  \begin{itemize}
+    \item Sous-estimer un danger à venir,
+    \item Surestimer un coup avantageux à court terme,
+    \item Reporter une mauvaise situation sans jamais l'éviter.
+  \end{itemize}
+
+  ~
+
+  \subsection{Exemple dans Reversi}
+  \textbf{Exemple dans Reversi}
+
+  L’IA peut prendre un coin trop tôt car elle ne voit pas que l’adversaire pourra retourner toute une ligne juste après la profondeur analysée.
+
+  ~
+
+  \subsection{Conséquence}
+  \textbf{Conséquence}
+  \begin{itemize}
+    \item Décisions stratégiques faibles ou dangereuses.
+    \item Mauvaise gestion des coups clés en fin de partie.
+    \item Comportement artificiellement optimiste ou pessimiste.
+  \end{itemize}
+
+  ~
+
+  \subsection{Pistes pour limiter cet effet}
+  \textbf{Pistes pour limiter cet effet}
+  \begin{enumerate}
+    \item \textbf{Profondeur adaptative} : Augmenter la profondeur de recherche dans les situations critiques.
+    \item \textbf{Fonction d’évaluation plus sensible} : 
+    \begin{itemize}
+      \item Intégrer des indices stratégiques à long terme (mobilité, stabilité des pièces, etc.).
+      \item Valoriser les positions durables plutôt que les gains immédiats.
+    \end{itemize}
+  \end{enumerate}
+\end{frame}
+
+\section{Réseau de neurones – Une amélioration pertinente ?}
+\begin{frame}
+  \begin{center}
+      \Large \textbf{Réseau de neurones – Une amélioration pertinente ?}
+  \end{center}
+\end{frame}
+
+\subsection{Pourquoi envisager un réseau de neurones ?}
+\begin{frame}
+      \frametitle{Pourquoi envisager un réseau de neurones ?}
+      Un réseau de neurones peut améliorer la qualité des décisions de l’IA, notamment en :
+
+      \begin{itemize}
+        \item \textbf{Remplaçant ou renforçant la fonction d’évaluation} des positions.
+        \item \textbf{Apprenant à partir de parties humaines ou simulées}, pour reconnaître des schémas gagnants plus complexes.
+        \item Réduisant l’impact de \textbf{l’effet d’horizon} en anticipant des conséquences à long terme.
+        \item Étant utilisé \textbf{en complément d’Alpha-Beta}, pour mieux évaluer les feuilles de l’arbre.
+      \end{itemize}
+\end{frame}
+
+\subsection{Limitations à prendre en compte}
+\begin{frame}
+  \frametitle{Limitations à prendre en compte}
+  \begin{itemize}
+    \item \textbf{Complexité d’intégration} : Nécessite souvent des bibliothèques externes ou une liaison entre plusieur langage comme le C + Python.
+    \item \textbf{Entraînement nécessaire} : Il faut des milliers de parties bien évaluées pour produire un réseau efficace.
+    \item \textbf{Moins rapide} qu’une fonction classique d'évaluation, sauf si on l'optimise.
+  \end{itemize}
+\end{frame}
+
+\subsection{Quand l’utiliser ?}
+\begin{frame}
+  \frametitle{Quand l’utiliser ?}
+  \begin{itemize}
+    \item Pour une IA \textbf{avancée}, visant un niveau expert ou de compétition.
+    \item Si on acceptes d’introduire une \textbf{couche logicielle supplémentaire} (ex. liaison avec Python ou C++ moderne).
+  \end{itemize}
+
+  ~
+
+  Un réseau de neurones peut grandement améliorer ton IA, mais il nécessite plus de ressourceUn réseau de neurones peut grandement améliorer ton IA, mais il nécessite plus de ressources, de données et de temps de développement.s, de données et de temps de développement.
 \end{frame}
 
 \section{Conclusion}
