@@ -107,7 +107,110 @@ Cette fonction permet de simuler une profondeur arbitraire de coups pour l’IA.
 Elle prend en argument :
 - un plateau  
 - la couleur du bot  
-- la profondeur de l’arbre à calculer  
+- la profondeur de l’arbre à calculer
+
+### Phase 5
+
+le problémes que nous rencontrons à cette étapes est le temps de calcul nécessaire pour trouver le bon chemin on utilise l'algo minmax on parcour l'entièreter de l'abre pour palier se problémes on utilise l'algoritmhe alphabeta :
+
+#### Algorithme Alpha-Beta – Résumé pour Reversi
+
+#### 🎯 Objectif
+L’algorithme Alpha-Beta est une version optimisée de Minimax, utilisé pour explorer les coups possibles dans un jeu comme Reversi, tout en **réduisant les calculs inutiles** grâce à des **coupes intelligentes**.
+
+
+#### ⚙️ Fonctionnement général
+
+- **Deux joueurs** :
+  - MAX : cherche à maximiser son score
+  - MIN : cherche à minimiser le score adverse
+
+- **Paramètres clés** :
+  - `Alpha` : meilleure valeur que MAX peut garantir jusqu’ici
+  - `Beta` : meilleure valeur que MIN peut garantir jusqu’ici
+
+- **Recherche récursive** :
+  - À chaque niveau de profondeur, on explore les coups possibles.
+  - On met à jour Alpha et Beta à chaque nœud.
+  - Si une branche ne peut pas influencer le résultat final, elle est **coupée** (non explorée).
+
+
+
+#### ✂️ Principe des coupes
+
+- Si MIN trouve un coup pire que ce que MAX accepte déjà (`score ≤ alpha`), il arrête d'explorer (coupe Alpha).
+- Si MAX trouve un coup meilleur que ce que MIN tolère (`score ≥ beta`), il coupe aussi (coupe Beta).
+
+
+#### ✅ Avantages dans Reversi
+
+- Évite d’explorer des coups non pertinents.
+- Permet une recherche plus **profonde** dans le même temps.
+- Plus efficace que Minimax simple, surtout quand l’ordre des coups est bien optimisé.
+
+
+#### 📌 Utilisation
+
+L’algorithme Alpha-Beta est particulièrement adapté à Reversi en raison du grand nombre de coups possibles à chaque tour. Il est essentiel pour une IA efficace dans ce type de jeu.
+
+## 🚀 Amélioration
+
+### 🌅 l'effet d'horizon ?
+
+L'effet d'horizon survient quand l'IA, à cause de sa **profondeur de recherche limitée**, **n'anticipe pas une menace ou une opportunité majeure** située juste après la fin de sa vision. Cela peut la pousser à :
+- Sous-estimer un danger à venir,
+- Surestimer un coup avantageux à court terme,
+- Reporter une mauvaise situation sans jamais l'éviter.
+
+#### 🎯 Exemple dans Reversi
+L’IA peut prendre un coin trop tôt car elle ne voit pas que l’adversaire pourra retourner toute une ligne **juste après** la profondeur analysée.
+
+#### ❗ Conséquences
+- Décisions stratégiques faibles ou dangereuses.
+- Mauvaise gestion des coups clés en fin de partie.
+- Comportement artificiellement optimiste ou pessimiste.
+
+#### 🛠️ Pistes pour limiter cet effet
+
+1. **Profondeur adaptative** : Augmenter la profondeur de recherche dans les situations critiques.
+2. **Recherche itérative approfondie** : Approcher progressivement la limite de profondeur, pour repérer les dangers plus tôt.
+3. **Fonction d’évaluation plus sensible** :
+   - Intégrer des indices stratégiques à long terme (mobilité, stabilité des pièces, etc.).
+   - Valoriser les positions durables plutôt que les gains immédiats.
+4. **Prise en compte des menaces différées** :
+   - Ajouter une reconnaissance de motifs qui annoncent un retournement de situation.
+   - Exemple : éviter les coups qui donnent accès à des coins ou bordures.
+
+### 🧠 Réseau de neurones – Une amélioration pertinente ?
+
+#### ✅ Pourquoi envisager un réseau de neurones ?
+
+Un réseau de neurones peut améliorer la qualité des décisions de l’IA, notamment en :
+
+- **Remplaçant ou renforçant la fonction d’évaluation** des positions.
+- **Apprenant à partir de parties humaines ou simulées**, pour reconnaître des schémas gagnants plus complexes.
+- Réduisant l’impact de l’**effet d’horizon** en anticipant des conséquences à long terme.
+- Étant utilisé **en complément d’Alpha-Beta**, pour mieux évaluer les feuilles de l’arbre.
+
+---
+
+#### ⚠️ Limitations à prendre en compte
+
+- **Complexité d’intégration** : Nécessite souvent des bibliothèques externes (TensorFlow, PyTorch, etc.) ou une architecture hybride (C + Python).
+- **Entraînement nécessaire** : Il faut des milliers de parties bien évaluées pour produire un réseau efficace.
+- **Moins rapide** qu’une fonction heuristique manuelle, sauf optimisation.
+
+---
+
+#### 🧩 Quand l’utiliser ?
+
+- Pour une IA **avancée**, visant un niveau expert ou de compétition.
+- Si tu veux expérimenter avec le **machine learning**.
+- Si tu acceptes d’introduire une **couche logicielle supplémentaire** (ex. liaison avec Python ou C++ moderne).
+
+
+Un réseau de neurones peut grandement améliorer ton IA, mais il nécessite plus de ressources, de données et de temps de développement.
+
 
 ## Conditions d’utilisation
 
