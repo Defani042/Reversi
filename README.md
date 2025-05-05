@@ -173,13 +173,10 @@ L’IA peut prendre un coin trop tôt car elle ne voit pas que l’adversaire po
 #### 🛠️ Pistes pour limiter cet effet
 
 1. **Profondeur adaptative** : Augmenter la profondeur de recherche dans les situations critiques.
-2. **Recherche itérative approfondie** : Approcher progressivement la limite de profondeur, pour repérer les dangers plus tôt.
-3. **Fonction d’évaluation plus sensible** :
+2. **Fonction d’évaluation plus sensible** :
    - Intégrer des indices stratégiques à long terme (mobilité, stabilité des pièces, etc.).
    - Valoriser les positions durables plutôt que les gains immédiats.
-4. **Prise en compte des menaces différées** :
-   - Ajouter une reconnaissance de motifs qui annoncent un retournement de situation.
-   - Exemple : éviter les coups qui donnent accès à des coins ou bordures.
+
 
 ### 🧠 Réseau de neurones – Une amélioration pertinente ?
 
@@ -196,17 +193,16 @@ Un réseau de neurones peut améliorer la qualité des décisions de l’IA, not
 
 #### ⚠️ Limitations à prendre en compte
 
-- **Complexité d’intégration** : Nécessite souvent des bibliothèques externes (TensorFlow, PyTorch, etc.) ou une architecture hybride (C + Python).
+- **Complexité d’intégration** : Nécessite souvent des bibliothèques externes ou une liaison entre plusieur langage comme le C + Python.
 - **Entraînement nécessaire** : Il faut des milliers de parties bien évaluées pour produire un réseau efficace.
-- **Moins rapide** qu’une fonction heuristique manuelle, sauf optimisation.
+- **Moins rapide** qu’une fonction classique d'évaluation, sauf si on l'optimise.
 
 ---
 
 #### 🧩 Quand l’utiliser ?
 
 - Pour une IA **avancée**, visant un niveau expert ou de compétition.
-- Si tu veux expérimenter avec le **machine learning**.
-- Si tu acceptes d’introduire une **couche logicielle supplémentaire** (ex. liaison avec Python ou C++ moderne).
+- Si on acceptes d’introduire une **couche logicielle supplémentaire** (ex. liaison avec Python ou C++ moderne).
 
 
 Un réseau de neurones peut grandement améliorer ton IA, mais il nécessite plus de ressources, de données et de temps de développement.
