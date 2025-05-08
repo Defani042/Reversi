@@ -31,6 +31,7 @@ tab_coordonnee creer_coord(int len){
         printf("Erreur malloc par la fonction creer_coord()\n");
         exit(EXIT_FAILURE);
     }
+    /*On initialise le talbeau de valeurs à -1*/
     for (x=0;x<len;x++){
         tc.tab[x].x = -1;
         tc.tab[x].y = -1;

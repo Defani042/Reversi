@@ -161,7 +161,7 @@ int eval(plat p, int couleur){
   for (x=0;x<p->l;x++){
     for (y=0;y<p->c;y++){
       if (p->mat[x][y] == couleur){
-        score += mat_eval[x][y];
+        score += mat_eval[x][y]; /*Calcule la somme des points en fonction de la couleur du joueur/bot évalué*/
       } 
     }
   }
@@ -191,6 +191,8 @@ arbre simuler_coup_prof_1(plat p, int couleur){
     tab_coordonnee tc;
     int min = 999;
 
+    /*Initialisation*/
+
     x_min = min;
     y_min = min;
     nbfils = plat_compter_quatre(p);
@@ -198,18 +200,21 @@ arbre simuler_coup_prof_1(plat p, int couleur){
     a = creer_arbre(min, nbfils);
     tmp = allocution_plateau(LIGNE, COLONNE);
     
+    /*On regarde chaque coup possible de jouer*/
     for (n=0;n<nbfils;n++){
         pltcpy(p, tmp);
         afficher_mat(p);
         x = tc.tab[n].x;
         y = tc.tab[n].y;
+        /*Simulation d'un coup*/
         if (set_case_plateau(x,y,couleur,tmp) != 1){
             printf("Cas impossible, s'inquiéter si ce message apparait(1)\n");
         }
         tmp=retourner_jetons(tmp,x,y,couleur);
         tmp=plat_supprimer_quatre(tmp);
         tmp=liste_coup_valide(tmp, couleur);
-        a->branches[n] = simuler_coup_prof_0(tmp, (couleur%2)+1);
+        a->branches[n] = simuler_coup_prof_0(tmp, (couleur%2)+1); /*On associe a cette variable un arbre dont la valeur est évaluée*/
+        /*On recherchhe la valeur minimum, et on enregitre ses coordonnées*/
         if (min >= a->branches[n]->val){
             if (min == a->branches[n]->val){
                 if (rand()%2){
@@ -225,13 +230,15 @@ arbre simuler_coup_prof_1(plat p, int couleur){
             }
         }
     }
+    /*La valeur min et les coordonnnées sont enregistrées dans l'arbre*/
     a->coord.x = x_min;
     a->coord.y = y_min;
     a->val = min;
+    /*Libération de la mémoire*/
     liberer_plateau(tmp);
     tmp = NULL;
     liberer_tab_coord(tc);
-    return a;
+    return a; /*On retourne l'arbre*/
 }
 
 /*
@@ -247,6 +254,8 @@ arbre simuler_coup_prof_2(plat p, int couleur){
     tab_coordonnee tc;
     int max = -999;
 
+    /*Initialisation*/
+
     x_max = max;
     y_max = max;
     nbfils = plat_compter_quatre(p);
@@ -254,17 +263,20 @@ arbre simuler_coup_prof_2(plat p, int couleur){
     a = creer_arbre(max, nbfils);
     tmp = allocution_plateau(LIGNE, COLONNE);
     
+    /*On regarde chaque coup possible de jouer*/
     for (n=0;n<nbfils;n++){
         pltcpy(p, tmp);
         x = tc.tab[n].x;
         y = tc.tab[n].y;
+        /*Simulation d'un coup*/
         if (set_case_plateau(x,y,couleur,tmp) != 1){
             printf("Cas impossible, s'inquiéter si ce message apparait(2)\n");
         }
         tmp=retourner_jetons(tmp,x,y,couleur);
         tmp=plat_supprimer_quatre(tmp);
         tmp=liste_coup_valide(tmp, couleur);
-        a->branches[n] = simuler_coup_prof_1(tmp,(couleur%2)+1);
+        a->branches[n] = simuler_coup_prof_1(tmp,(couleur%2)+1); /*On associe a cette variable un arbre dont la valeur est évaluée*/
+        /*On recherchhe la valeur maximum, et on enregitre ses coordonnées*/
         if (max <= a->branches[n]->val){
             if (max == a->branches[n]->val){
                 if (rand()%2){
@@ -280,13 +292,15 @@ arbre simuler_coup_prof_2(plat p, int couleur){
             }
         }
     }
+    /*La valeur max et les coordonnnées sont enregistrées dans l'arbre*/
     a->coord.x = x_max;
     a->coord.y = y_max;
     a->val = max;
+    /*Libération de la mémoire*/
     liberer_plateau(tmp);
     tmp = NULL;
     liberer_tab_coord(tc);
-    return a;
+    return a; /*On retourne l'arbre*/
 }
 
 /*
@@ -296,6 +310,7 @@ S: Rien
 */
 void simuler_coup_etape_3(plat p, int couleur){
     arbre a;
+    /*Le bot joue un coup en fonction des résultats renvoyés dans l'arbre*/
     a = simuler_coup_prof_2(p, couleur);
     set_case_plateau(a->coord.x,a->coord.y,couleur,p);
     p=retourner_jetons(p,a->coord.x,a->coord.y,couleur);
@@ -349,6 +364,7 @@ S: Rien
 */
 void simuler_coup_etape_4(plat p, int couleur, int prof){
     arbre a;
+    /*Le bot joue un coup en fonction des résultats renvoyés dans l'arbre*/
     a = simuler_coup_prof_n(p, couleur, prof);
     set_case_plateau(a->coord.x,a->coord.y,couleur,p);
     p=retourner_jetons(p,a->coord.x,a->coord.y,couleur);
@@ -370,9 +386,11 @@ arbre simuler_coup_prof_n(plat p, int couleur, int prof){
     tab_coordonnee tc;
     int min = 999, max = -999;
 
+    /*Cas d'arrêt. Si la profondeur est de 0, on évalue son plateau*/
     if (prof == 0){
         return creer_arbre(eval(p, couleur), 0);
     }
+    /*Si la profondeur est paire, on cherche le max*/
     if (prof % 2 == 0){
         x_max = max;
         y_max = max;
@@ -381,10 +399,12 @@ arbre simuler_coup_prof_n(plat p, int couleur, int prof){
         a = creer_arbre(max, nbfils);
         tmp = allocution_plateau(LIGNE, COLONNE);
 
+        /*Pour chaque coup possible :*/
         for (n = 0; n < nbfils; n++){
             pltcpy(p, tmp);
             x = tc.tab[n].x;
             y = tc.tab[n].y;
+            /*On simule le coup :*/
             if (set_case_plateau(x, y, couleur, tmp) != 1){
                 printf("Cas impossible, s'inquiéter si ce message apparait(2)\n");
             }
@@ -392,6 +412,7 @@ arbre simuler_coup_prof_n(plat p, int couleur, int prof){
             tmp = plat_supprimer_quatre(tmp);
             tmp = liste_coup_valide(tmp, couleur);
             a->branches[n] = simuler_coup_prof_n(tmp, (couleur % 2) + 1, prof-1);
+            /*On regarde si la valeur dépasse le max ou non.*/
             if (max <= a->branches[n]->val){
                 if (max == a->branches[n]->val){
                     if (rand() % 2){
@@ -407,6 +428,7 @@ arbre simuler_coup_prof_n(plat p, int couleur, int prof){
                 }
             }
         }
+        /*On enregistre les coordonnées du coup maximal*/
         a->coord.x = x_max;
         a->coord.y = y_max;
         a->val = max;
@@ -415,6 +437,7 @@ arbre simuler_coup_prof_n(plat p, int couleur, int prof){
         liberer_tab_coord(tc);
         return a;
     }
+    /*Si la profondeur est impaire, on cherche le min*/
     else{
         x_min = min;
         y_min = min;
@@ -423,11 +446,12 @@ arbre simuler_coup_prof_n(plat p, int couleur, int prof){
         a = creer_arbre(min, nbfils);
         tmp = allocution_plateau(LIGNE, COLONNE);
 
+        /*Pour chaque coup possible :*/
         for (n = 0; n < nbfils; n++){
             pltcpy(p, tmp);
-            /*afficher_mat(p);*/
             x = tc.tab[n].x;
             y = tc.tab[n].y;
+            /*On simule le coup :*/
             if (set_case_plateau(x, y, couleur, tmp) != 1){
                 printf("Cas impossible, s'inquiéter si ce message apparait(1)\n");
             }
@@ -435,6 +459,7 @@ arbre simuler_coup_prof_n(plat p, int couleur, int prof){
             tmp = plat_supprimer_quatre(tmp);
             tmp = liste_coup_valide(tmp, couleur);
             a->branches[n] = simuler_coup_prof_n(tmp, (couleur % 2) + 1, prof-1);
+            /*On regarde si la valeur dépasse le max ou non.*/
             if (min >= a->branches[n]->val){
                 if (min == a->branches[n]->val){
                     if (rand() % 2){
@@ -450,6 +475,7 @@ arbre simuler_coup_prof_n(plat p, int couleur, int prof){
                 }
             }
         }
+        /*On enregistre les coordonnées du coup maximal*/
         a->coord.x = x_min;
         a->coord.y = y_min;
         a->val = min;
