@@ -387,7 +387,8 @@ void choisir_joueur_mlv(plat p,int h){
         p->joueur = 2;
         p->bot = 1;
     }
-    else{
+    else{p->joueur = 1;
+        p->bot = 2;
         p->joueur = 1;
         p->bot = 2;
     }
@@ -540,7 +541,7 @@ S:rien
 
 /*
 R: Permet de jouer à l'étape 4
-E: rien
+E: profondeur
 S:rien
 */
 
@@ -584,9 +585,9 @@ void boucle_jeu_etape_4_mlv(int prof){
     fin_partie(p,h);
   }
 
-  /*
+/*
 R: Permet de jouer à l'étape 5
-E: rien
+E: profondeur
 S:rien
 */
 
@@ -630,22 +631,65 @@ void boucle_jeu_etape_5_mlv(int prof){
     fin_partie(p,h);
   }
 
+  /*
+R: Permet de jouer à l'étape 5
+E: rien
+S:rien
+*/
+
+void boucle_jeu_bot(int prof){
+    /*création et allocution du plateau*/
+    int h;
+    plat p;
+    p=allocution_plateau(LIGNE,COLONNE);
+    h=setMainWindow(*p);
+    /*tant que le plateau n'est pas rempli*/
+    while(verifier_tour_joueur(p,p->joueur) || verifier_tour_joueur(p,p->bot)){
+        p->joueur = 2;
+        p->bot = 1;
+        if(verifier_tour_joueur(p,p->bot)){
+            h=setMainWindow(*p);
+            MLV_wait_milliseconds(500);
+            simuler_coup_etape_5(prof,p); /*le bot 1 joue*/
+        }
+      p=plat_supprimer_quatre(p); /*on efface les coups jouables pour le joueur*/
+      calculer_score(p);/*on calcule le score*/
+      p->joueur = 1;
+        p->bot = 2;
+      if(verifier_tour_joueur(p,p->bot)){
+          h=setMainWindow(*p);
+          MLV_wait_milliseconds(500);
+          simuler_coup_etape_5(prof,p); /*le bot 2 joue*/
+      }
+      p=plat_supprimer_quatre(p); /*on efface les coups jouables pour le joueur*/
+      calculer_score(p);/*on calcule le score*/
+    }
+    h=setMainWindow(*p);
+    fin_jeux(p);
+    liberer_plateau(p);
+    fin_partie(p,h);
+  }
+
+
 /*
 R : permet de jouer
 E : rien
 S : rien
 */
 
-void jeu(int n, int prof){
+void jeu(int n, int prof, int bot){
     int height;
     height = MLV_get_desktop_height()-75; 
 
     MLV_create_window("Réversi","Réversi",height+200,height); /* créer la fenêtre*/
-    switch(n){
-        case 1 : boucle_jeu_etape_3_mlv();break;
-        case 2 : boucle_jeu_etape_4_mlv(prof);break;
-        case 3 : boucle_jeu_etape_5_mlv(prof);break;
-        default : boucle_jeu_mlv();break;
+    if (bot) boucle_jeu_bot(prof);
+    else{
+        switch(n){
+            case 1 : boucle_jeu_etape_3_mlv();break;
+            case 2 : boucle_jeu_etape_4_mlv(prof);break;
+            case 3 : boucle_jeu_etape_5_mlv(prof);break;
+            default : boucle_jeu_mlv();break;
+        }
     }
     
     

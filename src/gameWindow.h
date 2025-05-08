@@ -44,7 +44,7 @@ void boucle_jeu_etape_3_mlv();
 
 void boucle_jeu_etape_4_mlv(int prof);
 
-void jeu(int n, int prof);
+void jeu(int n, int prof, int bot);
 
 
 #endif /*_GAMEWINDOW_H_*/

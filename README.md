@@ -77,24 +77,24 @@ L’IA sélectionne une case aléatoirement parmi les coups valides. C’est la 
 Utilisation d’une **matrice d’évaluation** des positions :
 
 <pre> 
-      {COIN,BORD,BORD,BORD,BORD,BORD,BORD,COIN},
-      {BORD,DANG,MAUV,MAUV,MAUV,MAUV,DANG,BORD},
+      {COIN,DANG,BORD,BORD,BORD,BORD,DANG,COIN},
+      {DANG,DANG,MAUV,MAUV,MAUV,MAUV,DANG,DANG},
       {BORD,MAUV,BASE,BASE,BASE,BASE,MAUV,BORD},
       {BORD,MAUV,BASE,DEFA,DEFA,BASE,MAUV,BORD},
       {BORD,MAUV,BASE,DEFA,DEFA,BASE,MAUV,BORD},
       {BORD,MAUV,BASE,BASE,BASE,BASE,MAUV,BORD},
-      {BORD,DANG,MAUV,MAUV,MAUV,MAUV,DANG,BORD},
-      {COIN,BORD,BORD,BORD,BORD,BORD,BORD,COIN}
+      {DANG,DANG,MAUV,MAUV,MAUV,MAUV,DANG,DANG},
+      {COIN,DANG,BORD,BORD,BORD,BORD,DANG,COIN}
 </pre>
 
 **Légende** :
 
-- `4 (COIN)` : coins, prioritaires car irréversibles  
-- `2 (BORD)` : bords avantageux  
+- `150 (COIN)` : coins, prioritaires car irréversibles  
+- `10 (BORD)` : bords avantageux  
 - `1 (BASE)` : positions sûres  
 - `0 (DEFA)` : neutres  
-- `-1 (MAUV)` : risquées  
-- `-2 (DANG)` : à éviter absolument  
+- `-10 (MAUV)` : risquées  
+- `-150 (DANG)` : à éviter absolument  
 
 Utilisation de `simuler_cou_prof_3()` :  
 Elle simule 2 coups du joueur et 2 coups du bot. Elle retourne un arbre d’évaluation des coups possibles.  

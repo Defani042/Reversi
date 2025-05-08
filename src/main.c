@@ -34,21 +34,23 @@ void aide(char *s){
     printf("%s : Permet de jouer sur une fenêtre.\n\n",s);
     printf("%s --terminal : Permet de jouer sur le terminal.\n\n",s);
     printf("%s --regles : Permet d'afficher les règles du jeu.\n\n",s);
-    printf("%s --niveau val(de 0 à 4) : Choisit l'étape, par default 0.\n0: IA aléaoire\nDe 1 à 4 : étapes 3 à 6 de l'énoncé du projet\n\n",s);
+    printf("%s --niveau val(de 0 à 3) : Choisit l'étape, par default 0.\n0: IA aléaoire\nDe 1 à 4 : étapes 3 à 5 de l'énoncé du projet(la 6 est confondue avec la 5)\n\n",s);
     printf("%s --prof val(>0) : Choisit la profondeur de l'arbre pour l'ordinateur pour un difficulté personalisée.\n\n",s);
+    printf("%s --bot : Fait s'affronter deux bots au niv max, la profondeur peur être choisie.\n\n",s);
 }
 
 int main(int argc,char*argv[]){
     int val,index=-1;/*entiers relatifs aux fonctions de getopt.h*/
-    int terminal=0,h=1,r=1,niveau=0,profondeur=2;/*entiers relatifs aux options*/
+    int terminal=0,h=1,r=1,niveau=0,profondeur=2,bot=0;/*entiers relatifs aux options*/
     
-    const char* optstring=":htrn:p:";
+    const char* optstring=":htrn:p:b";
     const struct option lopts[] = {
         {"help", 0, NULL, 'h'},
         {"terminal", 0, NULL, 't'},
         {"regle", 0, NULL, 'r'},
         {"niveau", 1, NULL, 'n'},
         {"prof", 1, NULL, 'p'},
+        {"bot",0,NULL,'b'},
         {NULL, 0 , NULL , 0}
     };
 
@@ -60,10 +62,11 @@ int main(int argc,char*argv[]){
         case 'r' : regles();r=0; break;
         case 'n' : {niveau = atoi(optarg);
                 if (niveau < 0) niveau *= -1;
-                niveau = niveau%5;
+                niveau = niveau%4;
                 printf("Le niveau de l'étape est %d.\n",niveau);
                 break;
         }
+        case 'b' : bot = 1;break;
         case 'p' : {profondeur = atoi(optarg);
                 if (profondeur < 0) profondeur *= -1;
                 profondeur = profondeur%60;
@@ -88,7 +91,7 @@ int main(int argc,char*argv[]){
             default : boucle_jeu_terminal();break;
         }
     }
-    else jeu(niveau, profondeur);
+    else jeu(niveau, profondeur,bot);
     exit(EXIT_SUCCESS);
 }
   

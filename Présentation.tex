@@ -99,9 +99,9 @@
 
   \begin{tabular}{|c|c|c|c|c|c|c|c|}
     \hline
-    COIN & BORD & BORD & BORD & BORD & BORD & BORD & COIN \\
+    COIN & DANG & BORD & BORD & BORD & BORD & DANG & COIN \\
     \hline
-    BORD & DANG & MAUV & MAUV & MAUV & MAUV & DANG & BORD \\
+    DANG & DANG & MAUV & MAUV & MAUV & MAUV & DANG & DANG \\
     \hline
     BORD & MAUV & BASE & BASE & BASE & BASE & MAUV & BORD \\
     \hline
@@ -111,19 +111,19 @@
     \hline
     BORD & MAUV & BASE & BASE & BASE & BASE & MAUV & BORD \\
     \hline
-    BORD & DANG & MAUV & MAUV & MAUV & MAUV & DANG & BORD \\
+    DANG & DANG & MAUV & MAUV & MAUV & MAUV & DANG & DANG \\
     \hline
-    COIN & BORD & BORD & BORD & BORD & BORD & BORD & COIN \\
+    COIN & DANG & BORD & BORD & BORD & BORD & DANG & COIN \\
     \hline
   \end{tabular}
   \textbf{Légende} :
   \begin{itemize}
-    \item \textit{4 (COIN)} : coins, prioritaires car irréversibles
-    \item \textit{2 (BORD)} : bords avantageux
+    \item \textit{150 (COIN)} : coins, prioritaires car irréversibles
+    \item \textit{10 (BORD)} : bords avantageux
     \item \textit{1 (BASE)} : positions sûres
     \item \textit{0 (DEFA)} : neutres
-    \item \textit{-1 (MAUV)} : risquées
-    \item \textit{-2 (DANG)} : à éviter absolument
+    \item \textit{-10 (MAUV)} : risquées
+    \item \textit{-150 (DANG)} : à éviter absolument
   \end{itemize}
   Utilisation de \textit{simuler\_cou\_prof\_3()} :
 
