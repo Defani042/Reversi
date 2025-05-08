@@ -225,7 +225,7 @@ void afficher_graphique_sur_fenetre() {
 
     /* Mise à jour de la fenêtre et attente avant de fermer */
     MLV_update_window();
-    MLV_wait_seconds(100);
+    MLV_wait_mouse(&x,&y);
 }
 
 
