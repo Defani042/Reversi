@@ -60,6 +60,7 @@ void boucle_jeu_terminal();
 
 int  pltcpy(plat p, plat pc);
 
-int eval_2(plat p);
+int eval_score(plat p,int couleur);
+    
 
 #endif /*_PLATEAU_H_*/
