@@ -647,23 +647,24 @@ int  pltcpy(plat p, plat pc){
 }
 
 /*
-R: Renvoie la diference entre le score du joueur et du bot  
-E: un TAD plat
-S: un entier la diférence du score
+R: Renvoie la diference entre le score du joeur et u bot
+E: un TAD plat, 1 entier la couleur
+S: unn entier la diférence du score
 */
 
-int eval_2(plat p){
+int eval_score(plat p,int couleur){
     int res;
-    /*cas ou le bot joue les pions blancs*/
-    if(p->bot == 1 ){
+    /*cas ou on évalue la diff des pions Noires et Blancs*/
+    if (couleur==1){
+        res =  p->scoren - p->scoreb; 
+    }
+    /*cas ou on évalue la diff des pions Blancs et Noires*/
+    else{
         res = p->scoreb - p->scoren;
     }
-    else{
-        res = p->scoren - p->scoreb;
-    }
-
     return res;
 }
+
 
 
 #endif /*_PLATEAU_C_*/

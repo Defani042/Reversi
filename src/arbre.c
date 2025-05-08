@@ -371,7 +371,7 @@ arbre simuler_coup_prof_n(plat p, int couleur, int prof){
     int min = 999, max = -999;
 
     if (prof == 0){
-        return creer_arbre(eval(p, couleur), 0);
+        return creer_arbre(eval(p, couleur)+eval_score(p,couleur), 0);
     }
     if (prof % 2 == 0){
         x_max = max;
