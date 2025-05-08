@@ -8,12 +8,6 @@
 /*Macro*/
 #define LIGNE 8
 #define COLONNE 8
-#define COIN 4
-#define BORD 2
-#define BASE 1
-#define DEFA 0
-#define MAUV -1
-#define DANG -2
 
 /*TAD plateau*/
 typedef struct{

@@ -272,10 +272,10 @@ void saisir_coup(plat p) {
     }
     
     p = retourner_jetons(p,x,y,p->joueur);
-    printf("\n");
+    /*printf("\n");
     afficher_mat(p);
     printf("\n");
-    printf("Fin du tour\n");
+    printf("Fin du tour\n");*/
 }
 
 
