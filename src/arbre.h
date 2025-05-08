@@ -10,12 +10,12 @@
 #include "coordonnee.h"
 
 /*macro*/
-#define COIN 50
+#define COIN 150
 #define BORD 10
 #define BASE 1
 #define DEFA 0
 #define MAUV -10
-#define DANG -50
+#define DANG -150
 
 /*TAD arbre*/
 typedef struct branche{

@@ -34,8 +34,8 @@ void aide(char *s){
     printf("%s : Permet de jouer sur une fenêtre.\n\n",s);
     printf("%s --terminal : Permet de jouer sur le terminal.\n\n",s);
     printf("%s --regles : Permet d'afficher les règles du jeu.\n\n",s);
-    printf("%s --niveau val(de 0 à 5) : Choisit l'étape, par default 0.\n0: IA aléaoire\nDe 1 à 4 : étapes 3 à 6 de l'énoncé du projet\n\n",s);
-    printf("%s --prof val(<0) : Choisit la profondeur de l'arbre pour l'ordinateur pour un difficulté personalisée.\n\n",s);
+    printf("%s --niveau val(de 0 à 4) : Choisit l'étape, par default 0.\n0: IA aléaoire\nDe 1 à 4 : étapes 3 à 6 de l'énoncé du projet\n\n",s);
+    printf("%s --prof val(>0) : Choisit la profondeur de l'arbre pour l'ordinateur pour un difficulté personalisée.\n\n",s);
 }
 
 int main(int argc,char*argv[]){
