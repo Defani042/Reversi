@@ -193,7 +193,7 @@ void coordonnees(int h){
         exit(EXIT_FAILURE);
     }
 
-    for(i=h/9;i<h;i+=h/9){  /* boucle visant a afficher aux bon endrois les caractère du tableau */
+    for(i=h/9;i<h-15;i+=h/9){  /* boucle visant a afficher aux bon endrois les caractère du tableau */
         sprintf(aff,"%c",lettre[j++]); /* on transforme le caractère en string */
         MLV_draw_text_with_font(
             i + h/36, h/36,
@@ -202,7 +202,7 @@ void coordonnees(int h){
         );
     }
     j=0;
-    for(i=h/9;i<h;i+=h/9){  /* boucle visant a afficher aux bon endrois les caractère du tableau */
+    for(i=h/9;i<h-15;i+=h/9){  /* boucle visant a afficher aux bon endrois les caractère du tableau */
         sprintf(aff,"%c",chiffre[j++]); /*on transforme le caractère en string*/
         MLV_draw_text_with_font(
             h/36, i+h/36,
@@ -223,8 +223,8 @@ S : rien
 
 void grille(int h){
     int i,j;
-    for(i=0;i<h;i+=h/9){
-        for(j=0;j<h;j+=h/9){
+    for(i=0;i<h-11;i+=h/9){
+        for(j=0;j<h-11;j+=h/9){
             MLV_draw_line(i,j,i,h,MLV_rgba(0,100,0,255)); /* affiche les lignes horizontales */
             MLV_draw_line(i,j,h,j,MLV_rgba(0,100,0,255)); /* affiche les lignes verticales */
         
