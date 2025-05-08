@@ -505,6 +505,77 @@ int evaluation_position(arbre node) {
 }
 
 /*
+R: Trier les branches d'un arbre par ordre décroissant de valeur
+E: Un arbre `a` à trier, où chaque branche a une valeur dans le champ `val`
+S: Les branches de l'arbre sont triées par valeur, de la plus grande à la plus petite
+*/
+
+void trier_branches_par_val(arbre a) {
+    int i,j;
+    if (a == NULL || a->nb_fils <= 1) return;
+    /*tri par valeur décroissante*/
+    for (i = 0; i < a->nb_fils - 1; i++) {
+        for (j = i + 1; j < a->nb_fils; j++) {
+            if (a->branches[j]->val > a->branches[i]->val) {
+                /* Échange des pointeurs*/
+                arbre temp = a->branches[i];
+                a->branches[i] = a->branches[j];
+                a->branches[j] = temp;
+            }
+        }
+    }
+}
+
+/*
+R: Réduire le nombre de branches d’un arbre à un maximum de k
+E: un arbre a à réduire, un entier k
+S: un pointeur vers l’arbre réduit (a), avec au plus k branches conservées
+*/
+
+arbre reduire_branches_top_k(arbre a, int k) {
+    int i;
+
+    /* Vérifie que l'arbre est non nul */
+    if (a == NULL) {
+        return NULL;
+    }
+
+    /* Si le nombre de fils est inférieur ou égal à k, rien à faire */
+    if (a->nb_fils <= k) {
+        return a;
+    }
+
+    /* Libère les fils au-delà des k premiers */
+    for (i = k; i < a->nb_fils; i++) {
+        liberer_arbre(a->branches[i]);
+    }
+
+    /* Met à jour le nombre de fils */
+    a->nb_fils = k;
+
+    return a;
+}
+
+/*
+R: Préparer un nœud d’arbre pour Alpha-Beta en triant ses branches par valeur décroissante
+   et en ne gardant que les k meilleures branches.
+E: un arbre a à préparer, un entier top_k représentant le nombre maximum de branches à conserver
+S: vide (modifie l’arbre a directement)
+*/
+
+void preparer_noeud(arbre a, int top_k) {
+    /* Vérifie que l’arbre est non nul et qu’il possède des branches */
+    if (a != NULL && a->nb_fils > 0) {
+      
+        /* Trie les branches par ordre décroissant de valeur (les meilleurs coups d'abord) */
+        trier_branches_par_val(a);
+
+        /* Réduit les branches à un maximum de top_k */
+        reduire_branches_top_k(a, top_k);
+    }
+}
+
+/*
 R: Algorithme Alpha-Beta pour explorer l'arbre des coups
 E: 
     - 1 TAD arbre (node)
@@ -522,6 +593,8 @@ int alphabeta(arbre node, int profondeur, int alpha, int beta, int maximisateur,
     if (profondeur == 0 || node->nb_fils == 0) {
         return evaluation_position(node); /* Retourne l'évaluation de la position actuelle */
     }
+    /* Préparer l'arbre en triant les branches et en réduisant leur nombre à top_k (par exemple, top_k = 5) dans notre cas*/
+    preparer_noeud(node, 5);
     
     if (maximisateur) { /* Maximisation pour le joueur actuel */
         int max_val = INT_MIN;
@@ -718,7 +791,5 @@ void boucle_jeu_etape_5(int prof){
   printf("fin de partie\n");
  
 }
-
-
 
 #endif /*_ARBRE_C_*/

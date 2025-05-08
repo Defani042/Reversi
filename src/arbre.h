@@ -58,6 +58,12 @@ void boucle_jeu_etape_4(int prof);
 
 int evaluation_position(arbre node);
 
+void trier_branches_par_val(arbre a);
+
+void preparer_noeud(arbre a, int top_k);
+
+arbre reduire_branches_top_k(arbre a, int k);
+
 int alphabeta(arbre node, int profondeur, int alpha, int beta, int maximisateur, int *cut);
 
 coordonnee meilleur_coup(arbre racine, int profondeur);
@@ -67,5 +73,6 @@ arbre evaluation_arbre(plat p, int couleur, int prof);
 void simuler_coup_etape_5(int prof,plat p);
 
 void boucle_jeu_etape_5(int prof);
+
 
 #endif /*_ARBRE_H_*/
