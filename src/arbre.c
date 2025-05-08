@@ -1,6 +1,7 @@
 #ifndef _ARBRE_C_
 #define _ARBRE_C_
 #include "arbre.h"
+
 /*
 R: creer l'arbre vide
 E: vide
@@ -791,5 +792,7 @@ void boucle_jeu_etape_5(int prof){
   printf("fin de partie\n");
  
 }
+
+
 
 #endif /*_ARBRE_C_*/

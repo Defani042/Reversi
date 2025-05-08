@@ -4,9 +4,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <MLV/MLV_all.h>
+#include <time.h>
 
 #include "gameWindow.h"
 #include "arbre.h"
+#include "graph.h"
 
 #define FONT_PATH "fich/04B_30__.TTF"
 #define PATH_IMAGE "fich/fond.jpg"
@@ -584,16 +586,18 @@ void boucle_jeu_etape_4_mlv(int prof){
     liberer_plateau(p);
     fin_partie(p,h);
   }
-
 /*
 R: Permet de jouer à l'étape 5
-E: profondeur
+E: rien
 S:rien
 */
 
 void boucle_jeu_etape_5_mlv(int prof){
     /*création et allocution du plateau*/
-    int h;
+    int h,score_noir, score_blanc;
+    clock_t start, end;
+    float time;
+    float temps_ia;
     plat p;
     int commence=0;
     p=allocution_plateau(LIGNE,COLONNE);
@@ -605,7 +609,17 @@ void boucle_jeu_etape_5_mlv(int prof){
         if(verifier_tour_joueur(p,p->bot)){
           h=setMainWindow(*p);
           MLV_wait_milliseconds(500);
-          simuler_coup_etape_5(prof,p); /*le bot joue*/
+
+          start = clock();
+          simuler_coup_etape_5(prof, p); /* Le bot 1 joue */
+          end = clock();
+          time = ((float) (end - start)) / CLOCKS_PER_SEC;
+           
+          /* Enregistrement des données après le coup du bot */
+          score_noir = p->scoren;
+          score_blanc = p->scoreb;
+          temps_ia = 0.5;  /* Exemple de temps du bot (à adapter selon l'IA) */
+          enregistrer_analyse(score_noir, score_blanc, temps_ia);
       }
       p=plat_supprimer_quatre(p); /*on efface les coups jouables pour le joueur*/
       calculer_score(p);/*on calcule le score*/
@@ -614,17 +628,37 @@ void boucle_jeu_etape_5_mlv(int prof){
       p=liste_coup_valide(p,p->joueur); /*on affiche les coups valides*/
       h=setMainWindow(*p);
       if(verifier_tour_joueur(p,p->joueur)){
-         saisir_coup_mlv(p,h);/*on demande un coup a l'utilisateur*/  
+         saisir_coup_mlv(p,h);/*on demande un coup a l'utilisateur*/
+
+         /* Enregistrement des données après le coup du bot */
+         score_noir = p->scoren;
+         score_blanc = p->scoreb;
+         temps_ia = 0;  /* Exemple de temps du bot (à adapter selon l'IA) */
+         enregistrer_analyse(score_noir, score_blanc, temps_ia);
       }
       p=plat_supprimer_quatre(p); /*on efface les coups jouables pour le joueur*/
       if(verifier_tour_joueur(p,p->bot)){
           h=setMainWindow(*p);
           MLV_wait_milliseconds(500);
-          simuler_coup_etape_5(prof,p); /*le bot joue*/
+          
+          start = clock();
+          simuler_coup_etape_5(prof, p); /* Le bot 1 joue */
+          end = clock();
+          time = ((float) (end - start)) / CLOCKS_PER_SEC;
+
+          
+          /* Enregistrement des données après le coup du bot */
+          score_noir = p->scoren;
+          score_blanc = p->scoreb;
+          temps_ia = time;  /* Exemple de temps du bot (à adapter selon l'IA) */
+          enregistrer_analyse(score_noir, score_blanc, temps_ia);
       }
       p=plat_supprimer_quatre(p); /*on efface les coups jouables pour le joueur*/
       calculer_score(p);/*on calcule le score*/
     }
+      /* Affichage du graphique seulement à la fin du jeu */
+    afficher_graphique_sur_fenetre(); /* Affichage du graphique de l'évolution des scores et du temps */
+    
     h=setMainWindow(*p);
     fin_jeux(p);
     liberer_plateau(p);
@@ -637,38 +671,74 @@ E: rien
 S:rien
 */
 
-void boucle_jeu_bot(int prof){
-    /*création et allocution du plateau*/
-    int h;
+void boucle_jeu_bot(int prof) {
+    /* Déclaration des variables locales */
+    int h, score_noir, score_blanc;
+    float temps_ia;
     plat p;
+    clock_t start, end;
+    float time;
+    /* Création et allocation du plateau */
     p=allocution_plateau(LIGNE,COLONNE);
-    h=setMainWindow(*p);
-    /*tant que le plateau n'est pas rempli*/
-    while(verifier_tour_joueur(p,p->joueur) || verifier_tour_joueur(p,p->bot)){
+    h = setMainWindow(*p);
+    
+    /* Tant que le plateau n'est pas rempli */
+    while (verifier_tour_joueur(p, p->joueur) || verifier_tour_joueur(p, p->bot)) {
         p->joueur = 2;
         p->bot = 1;
-        if(verifier_tour_joueur(p,p->bot)){
-            h=setMainWindow(*p);
+        
+        if (verifier_tour_joueur(p, p->bot)) {
+            h = setMainWindow(*p);
             MLV_wait_milliseconds(500);
-            simuler_coup_etape_5(prof,p); /*le bot 1 joue*/
+            
+            start = clock();
+            simuler_coup_etape_5(prof, p); /* Le bot 1 joue */
+            end = clock();
+            time = ((float) (end - start)) / CLOCKS_PER_SEC;
+
+            /* Enregistrement des données après le coup du bot */
+            score_noir = p->scoren;
+            score_blanc = p->scoreb;
+            temps_ia = time;  /* Exemple de temps du bot (à adapter selon l'IA) */
+            enregistrer_analyse(score_noir, score_blanc, temps_ia);
         }
-      p=plat_supprimer_quatre(p); /*on efface les coups jouables pour le joueur*/
-      calculer_score(p);/*on calcule le score*/
-      p->joueur = 1;
+
+        p = plat_supprimer_quatre(p); /* On efface les coups jouables pour le joueur */
+        calculer_score(p); /* On calcule le score */
+        
+        p->joueur = 1;
         p->bot = 2;
-      if(verifier_tour_joueur(p,p->bot)){
-          h=setMainWindow(*p);
-          MLV_wait_milliseconds(500);
-          simuler_coup_etape_5(prof,p); /*le bot 2 joue*/
-      }
-      p=plat_supprimer_quatre(p); /*on efface les coups jouables pour le joueur*/
-      calculer_score(p);/*on calcule le score*/
+
+        if (verifier_tour_joueur(p, p->bot)) {
+            h = setMainWindow(*p);
+            MLV_wait_milliseconds(500);
+            
+            start = clock();
+            simuler_coup_etape_5(prof, p); /* Le bot 2 joue */
+            end = clock();
+            time = ((float) (end - start)) / CLOCKS_PER_SEC;
+
+            
+            /* Enregistrement des données après le coup du bot */
+            score_noir = p->scoren;
+            score_blanc = p->scoreb;
+            temps_ia = time;  /* Exemple de temps du bot (à adapter selon l'IA) */
+            enregistrer_analyse(score_noir, score_blanc, temps_ia);
+        }
+
+        p = plat_supprimer_quatre(p); /* On efface les coups jouables pour le joueur */
+        calculer_score(p); /* On calcule le score */
+
     }
-    h=setMainWindow(*p);
+
+    /* Affichage du graphique seulement à la fin du jeu */
+    afficher_graphique_sur_fenetre(); /* Affichage du graphique de l'évolution des scores et du temps */
+    
+    h = setMainWindow(*p);
     fin_jeux(p);
     liberer_plateau(p);
-    fin_partie(p,h);
-  }
+    fin_partie(p, h);
+}
 
 
 /*
@@ -695,5 +765,6 @@ void jeu(int n, int prof, int bot){
     
     MLV_free_window();
 }
+
 
 #endif /*_GAMEWINDOW_C_*/

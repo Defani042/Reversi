@@ -33,7 +33,8 @@ Le code est organisé en plusieurs modules :
 - **Gamewindow** : gestion de la fenêtre de jeu  
 - **Plateau** : gestion du plateau de jeu  
 - **Arbre** : gestion de l’arbre de décisions  
-- **Coordonnee** : gestion des coordonnées  
+- **Coordonnee** : gestion des coordonnées
+- **Graph** : gestion des graphique d'annalise
 
 ### 🧱 Types Abstraits de Données (TAD)
 
@@ -152,6 +153,15 @@ L’algorithme Alpha-Beta est une version optimisée de Minimax, utilisé pour e
 #### 📌 Utilisation
 
 L’algorithme Alpha-Beta est particulièrement adapté à Reversi en raison du grand nombre de coups possibles à chaque tour. Il est essentiel pour une IA efficace dans ce type de jeu.
+
+### Phase 6
+
+pour la phase 6 nous avions déjà effectuer un arbre ne stockant que les valeurs de poids et les  coordonnées des coups donc on utilisait déjà un seul plateau. On a implémenter une fonction qui permet de ne plus stocker les arbre qui n'ont pas été visité par alphabeta pour améliorer le stockage de l'arbre.
+
+### Phase 7
+
+ - ajout de la possibilité de faire s'affronter deux bot
+ - ajout de la fonction de graph de fin de partie 
 
 ## 🚀 Amélioration
 

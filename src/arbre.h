@@ -8,6 +8,7 @@
 
 #include "plateau.h"
 #include "coordonnee.h"
+#include "graph.h"
 
 /*macro*/
 #define COIN 150
