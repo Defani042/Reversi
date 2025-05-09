@@ -24,7 +24,6 @@
 \end{frame}
 
 \begin{frame}
-  \subsection{Organisation du code}
   \frametitle{Organisation du code}
   Le code est organisé en plusieurs modules :
   \begin{itemize}
@@ -33,10 +32,10 @@
   \item \textbf{Plateau} : gestion du plateau de jeu
   \item \textbf{Arbre} : gestion de l’arbre de décisions
   \item \textbf{Coordonnee} : gestion des coordonnées
+  \item \textbf{Graph} : gestion des graphes de fin de partie
   \end{itemize}
 \end{frame}
 
-\subsection{Structure plateau}
 \begin{frame}
   \frametitle{Structure plateau}
   \begin{itemize}
@@ -47,7 +46,6 @@
   \end{itemize}
 \end{frame}
 
-\subsection{Structure arbre}
 \begin{frame}
   \frametitle{Structure arbre}
   \begin{itemize}
@@ -61,7 +59,6 @@
 \section{Structure de données}
 \begin{frame}
   \frametitle{Structure de données}
-  \subsection{coordonnées}
   \textit{coordonnee}
   \begin{itemize}
     \item \textit{x} ,\textit{y} : entiers (coordonnées)
@@ -69,7 +66,6 @@
 
 ~
 
-  \subsection{tab\_coordonnées}
   \textit{tab\_coordonnee}
   \begin{itemize}
     \item \textit{len} : taille du tableau
@@ -84,7 +80,6 @@
   \end{center}
 \end{frame}
 
-\subsection{Phases 1 \& 2}
 \begin{frame}
   \frametitle{Phases 1 \& 2}
   L’IA sélectionne une case aléatoirement parmi les coups valides.
@@ -92,7 +87,6 @@
   C’est la version la plus simple.
 \end{frame}
 
-\subsection{Phases 3}
 \begin{frame}
   \frametitle{Phases 3}
   Utilisation d’une \textbf{matrice d’évaluation} des positions :
@@ -125,14 +119,13 @@
     \item \textit{-10 (MAUV)} : risquées
     \item \textit{-150 (DANG)} : à éviter absolument
   \end{itemize}
-  Utilisation de \textit{simuler\_cou\_prof\_3()} :
+  Utilisation de \textit{simuler\_coup\_prof\_3()} :
 
 Elle simule 2 coups du joueur et 2 coups du bot. Elle retourne un arbre d’évaluation des coups possibles.
 
 Si plusieurs coups ont la même valeur, le choix est fait aléatoirement.
 \end{frame}
 
-\subsection{Phases 4}
 \begin{frame}
   \frametitle{Phases 4}
   Approche \textbf{récursive} avec \textit{simuler\_coup\_prof\_n()} :
@@ -145,24 +138,27 @@ Si plusieurs coups ont la même valeur, le choix est fait aléatoirement.
     \item La couleur du bot
     \item La profondeur de l’arbre à calculer
   \end{itemize}
-\end{frame}
-
-\subsection{Phases 5}
-\begin{frame}
-  \frametitle{Phases 5}
-  Le problèmes que nous rencontrons à cette étapes est le temps de calcul nécessaire pour trouver le bon chemin on utilise l'algo minmax on parcour l'entièreter de l'abre pour palier se problémes on utilise l'algoritmhe alphabeta :
 
   ~
 
-\textbf{Algorithme Alpha-Beta – Résumé pour Reversi}
+  Parcours de l'arbre avec Minmax
+\end{frame}
+
+\begin{frame}
+  \frametitle{Phases 5}
+  \textbf{Le problème :} le parcours de l'arbre prend beaucoup trop de temps.
+
+  ~
+
+\textbf{Solution :} Algorithme Alpha-Beta
 
 ~
 
-\textbf{Objectif}
-
-~
-
-L’algorithme Alpha-Beta est une version optimisée de Minimax, utilisé pour explorer les coups possibles dans un jeu comme Reversi, tout en \textbf{réduisant les calculs inutiles} grâce à des \textbf{coupes intelligentes}.
+\textbf{Objectif :} 
+\begin{enumerate}
+  \item Parcours plus rapide de l'arbre
+  \item Réduction des calculs inutiles
+\end{enumerate}
 \end{frame}
 
 \begin{frame}
@@ -171,7 +167,7 @@ L’algorithme Alpha-Beta est une version optimisée de Minimax, utilisé pour e
     \item \textbf{Deux joueurs }: 
     \begin{itemize}
       \item MAX : cherche à maximiser son score
-      \item MIN : cherche à minimiser le score adverse
+      \item MIN : cherche à minimiser le score
     \end{itemize}
     \item \textbf{Paramètres clés} :
     \begin{itemize}
@@ -203,9 +199,9 @@ L’algorithme Alpha-Beta est une version optimisée de Minimax, utilisé pour e
   ~
 
   \begin{itemize}
-    \item Évite d’explorer des coups non pertinents.Plus efficace que Minimax simple, surtout quand l’ordre des coups est bien optimisé.
+    \item Évite d’explorer des coups non pertinents.
     \item Permet une recherche plus profonde dans le même temps.
-    \item Plus efficace que Minimax simple, surtout quand l’ordre des coups est bien optimisé.
+    \item Plus efficace que Minmax simple, surtout quand l’ordre des coups est bien optimisé.
   \end{itemize}
 
   ~
@@ -215,7 +211,25 @@ L’algorithme Alpha-Beta est une version optimisée de Minimax, utilisé pour e
 
   ~
 
-  L’algorithme Alpha-Beta est particulièrement adapté à Reversi en raison du grand nombre de coups possibles à chaque tour. Il est essentiel pour une IA efficace dans ce type de jeu.
+  L’algorithme Alpha-Beta est particulièrement adapté à Reversi car il y a beaucoup de coups possibles.
+\end{frame}
+
+\begin{frame}
+  \frametitle{Phases 6 \& 7}
+  Phase 6 :
+  \begin{itemize}
+    \item Optimisation du stokage de l'arbre
+    \item Chaque nœud de l'arbre de stocke que deux valeurs
+    \item Toutes les bran hes de l'arbre ne sont pas stockées
+  \end{itemize}
+
+  ~
+
+  Phase 7 :
+  \begin{itemize}
+    \item Ajout d'une partie bot contre bot
+    \item Ajout d'un graph de fin de partie 
+  \end{itemize}
 \end{frame}
 
 \section{Difficultées rencontrées et solution trouvées}
@@ -229,9 +243,14 @@ L’algorithme Alpha-Beta est une version optimisée de Minimax, utilisé pour e
     \end{itemize}
     \item
     \begin{itemize}
-      \item D : Comment agrandir la fenêtre de jeu sans avoir besoin de modifié tous le code associé.
-      \item S : Pour la fenêtre j'utilise une taille égale  à la hauteur de fenêtre - 100 pixel pour la longueur et la largeur et tout le code est ajusté sur cette valeure j'ai juste choisi de créer un fenêtre plus grande sur la longeur.   
-      \end{itemize}
+      \item D : Comment modifier la boucle de jeu pour faire s'affronter deux bots ?
+      \item S : On inverse la couleur du joueur et du bot à chaque coup pour que le bot joue sur les deux couleurs.
+    \end{itemize}
+    \item
+    \begin{itemize}
+      \item D : Comment optimiser le stockage de l'arbre sans pénaliser l'éfficacité de l'IA ?
+      \item S : Grâce a la fonction \textit{reduire\_branche\_top\_k}.
+    \end{itemize}
   \end{enumerate}
 \end{frame}
 
@@ -243,10 +262,9 @@ L’algorithme Alpha-Beta est une version optimisée de Minimax, utilisé pour e
 \end{frame}
 
 \begin{frame}
-  \subsection{L'effet d'horizon ?}
   \textbf{L'effet d'horizon ?}
 
-  L'effet d'horizon survient quand l'IA, à cause de sa \textbf{profondeur de recherche limitée, n'anticipe pas une menace ou une opportunité majeure} située juste après la fin de sa vision. Cela peut la pousser à :
+  C'est l'IA qui ne prend pas toutes les possibilités de jeu en compte.
   \begin{itemize}
     \item Sous-estimer un danger à venir,
     \item Surestimer un coup avantageux à court terme,
@@ -255,14 +273,6 @@ L’algorithme Alpha-Beta est une version optimisée de Minimax, utilisé pour e
 
   ~
 
-  \subsection{Exemple dans Reversi}
-  \textbf{Exemple dans Reversi}
-
-  L’IA peut prendre un coin trop tôt car elle ne voit pas que l’adversaire pourra retourner toute une ligne juste après la profondeur analysée.
-
-  ~
-
-  \subsection{Conséquence}
   \textbf{Conséquence}
   \begin{itemize}
     \item Décisions stratégiques faibles ou dangereuses.
@@ -272,7 +282,6 @@ L’algorithme Alpha-Beta est une version optimisée de Minimax, utilisé pour e
 
   ~
 
-  \subsection{Pistes pour limiter cet effet}
   \textbf{Pistes pour limiter cet effet}
   \begin{enumerate}
     \item \textbf{Profondeur adaptative} : Augmenter la profondeur de recherche dans les situations critiques.
@@ -284,14 +293,6 @@ L’algorithme Alpha-Beta est une version optimisée de Minimax, utilisé pour e
   \end{enumerate}
 \end{frame}
 
-\section{Réseau de neurones – Une amélioration pertinente ?}
-\begin{frame}
-  \begin{center}
-      \Large \textbf{Réseau de neurones – Une amélioration pertinente ?}
-  \end{center}
-\end{frame}
-
-\subsection{Pourquoi envisager un réseau de neurones ?}
 \begin{frame}
       \frametitle{Pourquoi envisager un réseau de neurones ?}
       Un réseau de neurones peut améliorer la qualité des décisions de l’IA, notamment en :
@@ -304,27 +305,18 @@ L’algorithme Alpha-Beta est une version optimisée de Minimax, utilisé pour e
       \end{itemize}
 \end{frame}
 
-\subsection{Limitations à prendre en compte}
 \begin{frame}
   \frametitle{Limitations à prendre en compte}
   \begin{itemize}
-    \item \textbf{Complexité d’intégration} : Nécessite souvent des bibliothèques externes ou une liaison entre plusieur langage comme le C + Python.
+    \item \textbf{Complexité d’intégration} : Nécessite souvent des bibliothèques externes ou une liaison entre plusieurs langages comme le C + Python.
     \item \textbf{Entraînement nécessaire} : Il faut des milliers de parties bien évaluées pour produire un réseau efficace.
     \item \textbf{Moins rapide} qu’une fonction classique d'évaluation, sauf si on l'optimise.
-  \end{itemize}
-\end{frame}
-
-\subsection{Quand l’utiliser ?}
-\begin{frame}
-  \frametitle{Quand l’utiliser ?}
-  \begin{itemize}
-    \item Pour une IA \textbf{avancée}, visant un niveau expert ou de compétition.
-    \item Si on acceptes d’introduire une \textbf{couche logicielle supplémentaire} (ex. liaison avec Python ou C++ moderne).
   \end{itemize}
 
   ~
 
-  Un réseau de neurones peut grandement améliorer ton IA, mais il nécessite plus de ressourceUn réseau de neurones peut grandement améliorer ton IA, mais il nécessite plus de ressources, de données et de temps de développement.s, de données et de temps de développement.
+    Un réseau de neurones peut grandement améliorer l' IA, mais il nécessite plus de ressources, de données et de temps de développement.
+
 \end{frame}
 
 \section{Conclusion}
