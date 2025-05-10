@@ -588,14 +588,12 @@ S: Renvoie un entier représentant la meilleure évaluation d'une position à pa
 */
 int alphabeta(arbre node, int profondeur, int alpha, int beta, int maximisateur, int *cut) {
     int val;
-    int i;
+    int i,j;
     
     /* Cas de base : Si on atteint une profondeur maximale ou une feuille */
     if (profondeur == 0 || node->nb_fils == 0) {
         return evaluation_position(node); /* Retourne l'évaluation de la position actuelle */
     }
-    /* Préparer l'arbre en triant les branches et en réduisant leur nombre à top_k (par exemple, top_k = 5) dans notre cas*/
-    preparer_noeud(node, 5);
     
     if (maximisateur) { /* Maximisation pour le joueur actuel */
         int max_val = INT_MIN;
@@ -613,6 +611,11 @@ int alphabeta(arbre node, int profondeur, int alpha, int beta, int maximisateur,
             /* Si l'élagage Alpha est supérieur ou égal à Beta, arrêter l'exploration */
             if (alpha >= beta) {
                 *cut = 1; /* Indique qu'un élagage a eu lieu */
+               for (j = i + 1; j < node->nb_fils; j++) {
+                    liberer_arbre(node->branches[j]);
+                }
+                node->nb_fils = i + 1;  /* Met à jour le nombre de fils */
+                
             }
         }
         return max_val;
@@ -632,6 +635,11 @@ int alphabeta(arbre node, int profondeur, int alpha, int beta, int maximisateur,
             /* Si l'élagage Beta est inférieur ou égal à Alpha, arrêter l'exploration */
             if (alpha >= beta) {
                 *cut = 1; /* Indique qu'un élagage a eu lieu */
+                /* Libérer les branches restantes non explorées */
+                for (j = i + 1; j < node->nb_fils; j++) {
+                    liberer_arbre(node->branches[j]);
+                }
+                node->nb_fils = i + 1;  /* Met à jour le nombre de fils */
             }
         }
         return min_val;
